@@ -1168,7 +1168,7 @@
         /// </summary>
         /// <param name="polygon"></param>
         /// <returns></returns>
-        public Dictionary<string, long> GetRenKouCountByPoly( string polygon)
+        public Dictionary<string, long> GetRenKouCountByPoly(string maplevel, string polygon)
         {
             IGeometry geometry = GeomFromText(polygon);
             double minX = geometry.EnvelopeInternal.MinX;
