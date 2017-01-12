@@ -56,7 +56,7 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
         public void GetFWCountByPolyTest()
         {
             PolySelectManager target = new PolySelectManager(); // TODO: 初始化为适当的值
-            long count = target.GetFWCountByPoly( "POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
+            long count = target.GetFWCountByPoly("1", "POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
             Assert.AreNotEqual(count, 0);
         }
 
@@ -64,7 +64,7 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
         public void GetAJCountByPolyTest()
         {
             PolySelectManager target = new PolySelectManager(); // TODO: 初始化为适当的值
-            var dictionary = target.GetAjCountByPoly( "POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
+            var dictionary = target.GetAjCountByPoly("1", "POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
             Assert.AreNotEqual(dictionary.Count, 0);
         }
 
@@ -72,7 +72,7 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
         public void GetAnJianListByPolyTest()
         {
             PolySelectManager target = new PolySelectManager();
-            var list = target.GetAnJianListByPoly("jj", "POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
+            var list = target.GetAnJianListByPoly("jj", "","POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
             Assert.AreNotEqual(list.Count, 0);
         }
 
@@ -80,7 +80,7 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
         public void GetAnJianPageListByPolyTest()
         {
             PolySelectManager target = new PolySelectManager();
-            var list = target.GetAnJianPageListByPoly("jj", "POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))",1,100);
+            var list = target.GetAnJianPageListByPoly("jj","", "POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))",1,100);
             Assert.AreNotEqual(list.Count, 0);
         }
 
@@ -88,7 +88,12 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
         public void GetJSListByPolyTest()
         {
             PolySelectManager target = new PolySelectManager();
-            var list = target.GetJSListByPoly("POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
+            List<Point> plist = new List<Point>();
+            plist.Add(new Point(103.8, 36));
+            plist.Add(new Point(103.8, 37));
+            plist.Add(new Point(103.9, 36));
+            plist.Add(new Point(103.9, 37));
+            var list = target.GetJSListByPoly("拘留所",plist);
             Assert.AreNotEqual(list.Count, 0);
         }
 
@@ -96,7 +101,7 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
         public void GetJSPersonListByPolyTest()
         {
             PolySelectManager target = new PolySelectManager();
-            var list = target.GetJSPersonListByPoly("1");
+            var list = target.GetJSPersonListByPoly("1","1");
             Assert.AreNotEqual(list.Count, 0);
         }
 
@@ -104,7 +109,7 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
         public void GetJSPersonDetailByPolyTest()
         {
             PolySelectManager target = new PolySelectManager();
-            var jsp = target.GetJSPersonDetailByPoly("2");
+            var jsp = target.GetJSPersonDetailByPoly("1","2");
             Assert.AreNotEqual(jsp, 0);
         }
 
@@ -112,7 +117,7 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
         public void GetJSDetailByPolyTest()
         {
             PolySelectManager target = new PolySelectManager();
-            var js = target.GetJSPersonDetailByPoly("3");
+            var js = target.GetJSPersonDetailByPoly("1","3");
             Assert.AreNotEqual(js, 0);
         }
 
@@ -136,7 +141,7 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
         public void GetPcsZrqCountByPolyTest()
         {
             PolySelectManager target = new PolySelectManager();
-            var dictionary = target.GetPcsZrqCountByPoly("POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
+            var dictionary = target.GetPcsZrqCountByPoly("","POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
             Assert.AreNotEqual(dictionary.Count, 0);
         }
 
@@ -175,7 +180,7 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
         public void GetPoliceManCountByPolyTest()
         {
             PolySelectManager target = new PolySelectManager();
-            var count =target.GetPoliceManCountByPoly("POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
+            var count =target.GetPoliceManCountByPoly("","POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
             Assert.AreNotEqual(count, 0);
         }
 
@@ -199,7 +204,12 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
         public void GetPoliceCarListByPolyTest()
         {
             PolySelectManager target = new PolySelectManager();
-            var list = target.GetPoliceCarListByPoly("POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
+            List<Point> plist = new List<Point>();
+            plist.Add(new Point(103.8, 36));
+            plist.Add(new Point(103.8, 37));
+            plist.Add(new Point(103.9, 36));
+            plist.Add(new Point(103.9, 37));
+            var list = target.GetPoliceCarListByPoly(plist);
             Assert.AreNotEqual(list.Count, 0);
         }
 
@@ -207,7 +217,7 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
         public void GetRenKouCountByPolyTest()
         {
             PolySelectManager target = new PolySelectManager();
-            var count = target.GetRenKouCountByPoly("POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
+            var count = target.GetRenKouCountByPoly("","POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
             Assert.AreNotEqual(count, 0);
         }
 
@@ -215,7 +225,7 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
         public void GetRenKouListByPolyTest()
         {
             PolySelectManager target = new PolySelectManager();
-            var list = target.GetRenKouListByPoly("czrk", "POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
+            var list = target.GetRenKouListByPoly("czrk","", "POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
             Assert.AreNotEqual(list.Count, 0);
         }
 
@@ -223,7 +233,7 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
         public void GetRenKouPageListByPolyText()
         {
             PolySelectManager target = new PolySelectManager();
-            var list = target.GetRenKouPageListByPoly("czrk", "POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))", 1, 100);
+            var list = target.GetRenKouPageListByPoly("czrk","", "POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))", 1, 100);
             Assert.AreNotEqual(list.Count, 0);
         }
 

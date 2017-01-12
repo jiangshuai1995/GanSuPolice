@@ -29,7 +29,7 @@
         /// <param name="mapLevel">地图级别</param>
         /// <param name="polygon">圈选范围</param>
         /// <returns></returns>
-        public Dictionary<string, long> GetAjCountByPoly(string polygon)
+        public Dictionary<string, long> GetAjCountByPoly(string mapLevel,string polygon)
         {
             IGeometry geometry = GeomFromText(polygon);
             double minX = geometry.EnvelopeInternal.MinX;
@@ -73,7 +73,7 @@
         /// <param name="mapLevel">地图级别</param>
         /// <param name="polygon">圈选范围</param>
         /// <returns></returns>
-        public List<AnJian> GetAnJianListByPoly(string ajType,string polygon)
+        public List<AnJian> GetAnJianListByPoly(string ajType,string mapLevel,string polygon)
         {
             IGeometry geometry = GeomFromText(polygon);
             double minX = geometry.EnvelopeInternal.MinX;
@@ -121,11 +121,12 @@
         /// 圈选获取案件分页列表
         /// </summary>
         /// <param name="ajType">案件类型</param>
+        /// <param name="mapLevel">地图级别</param>
         /// <param name="polygon">圈选范围</param>
         /// <param name="pageNum">页码</param>
         /// <param name="pageSize">页码大小</param>
         /// <returns></returns>
-        public List<AnJian> GetAnJianPageListByPoly(string ajType, string polygon, int pageNum, int pageSize)
+        public List<AnJian> GetAnJianPageListByPoly(string ajType, string mapLevel,string polygon, int pageNum, int pageSize)
         {
             IGeometry geometry = GeomFromText(polygon);
             double minX = geometry.EnvelopeInternal.MinX;
@@ -348,11 +349,13 @@
         /// <summary>
         /// 圈选获取监所列表
         /// </summary>
+        /// <param name="jstype"></param>
         /// <param name="polygon">圈选范围</param>
         /// <returns></returns>
-        public List<PolyJS> GetJSListByPoly( string polygon)
+        public List<PolyJS> GetJSListByPoly(string jstype, List<Point> polygon)
         {
-            IGeometry geometry = GeomFromText(polygon);
+            string str = CoordinateTransfer(polygon);
+            IGeometry geometry = GeomFromText(str);
             double minX = geometry.EnvelopeInternal.MinX;
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
@@ -374,7 +377,7 @@
                 using (var command = connection.CreateCommand())
                 {
                     //5.赋予查询语句
-                    command.CommandText = String.Format("SELECT * FROM dbo.js WHERE  jd >= '{0}' AND jd <= '{1}' AND wd >= '{2}' AND wd <= '{3}'", minX, maxX, minY, maxY);
+                    command.CommandText = String.Format("SELECT * FROM dbo.js WHERE  jstype='{0}' AND jd >= '{1}' AND jd <= '{2}' AND wd >= '{3}' AND wd <= '{4}'",jstype, minX, maxX, minY, maxY);
 
                     //6.执行查询并返回结果，如果涉及到返回多行和多列请用ExecuteReader
                     using (var reader = command.ExecuteReader())
@@ -397,9 +400,10 @@
         /// <summary>
         /// 圈选获取监所人员列表   点选监所列表，根据监所ID查询
         /// </summary>
+        /// <param name="type">监所人员类型</param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public List<JSPerson> GetJSPersonListByPoly( string id)
+        public List<JSPerson> GetJSPersonListByPoly(string type, string id)
         {
             List<JSPerson> jsplist = new List<JSPerson>();
 
@@ -417,7 +421,7 @@
                 using (var command = connection.CreateCommand())
                 {
                     //5.赋予查询语句
-                    command.CommandText = String.Format("SELECT * FROM dbo.jsry WHERE jsid='{0}' ",id);
+                    command.CommandText = String.Format("SELECT * FROM dbo.jsry  WHERE type='{0}' AND jsid='{1}' ",type,id);
 
                     //6.执行查询并返回结果，如果涉及到返回多行和多列请用ExecuteReader
                     using (var reader = command.ExecuteReader())
@@ -439,9 +443,10 @@
         /// <summary>
         /// 圈选获取监所人员详细信息 点选人员列表，根据人员ID查询
         /// </summary>
+        /// <param name="type">监所人员类型</param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public JSPersonDetail GetJSPersonDetailByPoly(string id)
+        public JSPersonDetail GetJSPersonDetailByPoly(string type,string id)
         {
             JSPersonDetail jspd = new JSPersonDetail();
 
@@ -459,7 +464,7 @@
                 using (var command = connection.CreateCommand())
                 {
                     //5.赋予查询语句
-                    command.CommandText = String.Format("SELECT * FROM dbo.jsry WHERE bh ='{0}' ", id);
+                    command.CommandText = String.Format("SELECT * FROM dbo.jsry WHERE type='{0}' AND bh ='{1}' ",type,id);
 
                     //6.执行查询并返回结果，如果涉及到返回多行和多列请用ExecuteReader
                     using (var reader = command.ExecuteReader())
@@ -515,6 +520,48 @@
             return jsdetail;
         }
 
+        ///<summary>
+        ///按类型获取监所信息
+        ///<param name="jstype">监所类型</param>
+        /// </summary>
+        /// <returns></returns>
+        public List<PolyJS> GetJSListByProvince(string jstype)
+        {
+            List<PolyJS> jslist = new List<PolyJS>();
+
+            //1.从webconfig.config文件中获取数据库连接信息
+            String connect = ConfigHelper.GetValueByKey("webservice.config", "localSQL");
+
+            //2.创建数据库连接
+            using (var connection = new NpgsqlConnection(connect))
+            {
+                //3.打开数据库连接
+                if (connection.State == System.Data.ConnectionState.Closed)
+                    connection.Open();
+
+                //4.创建数据库查询命令
+                using (var command = connection.CreateCommand())
+                {
+                    //5.赋予查询语句
+                    command.CommandText = String.Format("SELECT * FROM dbo.js WHERE  jstype='{0}'", jstype);
+
+                    //6.执行查询并返回结果，如果涉及到返回多行和多列请用ExecuteReader
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            PolyJS js = new PolyJS();
+                            js.JS_CODE = reader[4].ToString();
+                            js.JS_MC = reader[3].ToString();
+                            js.GAJGJD = reader[1].ToString();
+                            js.GAJGWD = reader[3].ToString();
+                            jslist.Add(js);
+                        }
+                    }
+                }
+            }
+            return jslist;
+        }
 
         /// <summary>
         /// 圈选获取常驻人口列表
@@ -568,9 +615,10 @@
         /// <summary>
         /// 圈选进行概要信息查询
         /// </summary>
+        /// <param name="mapLevel"></param>
         /// <param name="polygon"></param>
         /// <returns></returns>
-        public PolySummary GetFQInfoByPoly(string polygon)
+        public PolySummary GetFQInfoByPoly( string mapLevel,string polygon)
         {
             IGeometry geometry = GeomFromText(polygon);
             double minX = geometry.EnvelopeInternal.MinX;
@@ -610,8 +658,9 @@
         ///<summary>
         ///圈选获取房屋统计
         /// </summary>
+        ///<param name="maplevel">地图级别</param>
         ///<param name="polygon">圈选范围</param>
-        public long GetFWCountByPoly(string polygon)
+        public long GetFWCountByPoly(string maplevel,string polygon)
         {
             IGeometry geometry = GeomFromText(polygon);
             double minX = geometry.EnvelopeInternal.MinX;
@@ -753,9 +802,10 @@
         /// <summary>
         /// 圈选获取派出所责任区统计值
         /// </summary>
+        /// <param name="mapLevel"></param>
         /// <param name="polygon"></param>
         /// <returns></returns>
-        public Dictionary<string, long> GetPcsZrqCountByPoly(string polygon)
+        public Dictionary<string, long> GetPcsZrqCountByPoly(string mapLevel,string polygon)
         {
             IGeometry geometry = GeomFromText(polygon);
             double minX = geometry.EnvelopeInternal.MinX;
@@ -981,7 +1031,7 @@
         /// <param name="mapLevel"></param>
         /// <param name="polygon"></param>
         /// <returns></returns>
-        public long GetPoliceManCountByPoly(string polygon)
+        public long GetPoliceManCountByPoly(string mapLevel,string polygon)
         {
             IGeometry geometry = GeomFromText(polygon);
             double minX = geometry.EnvelopeInternal.MinX;
@@ -1119,9 +1169,10 @@
         /// </summary>
         /// <param name="polygon"></param>
         /// <returns></returns>
-        public List<PoliceCar> GetPoliceCarListByPoly(string polygon)
+        public List<PoliceCar> GetPoliceCarListByPoly(List<Point> polygon)
         {
-            IGeometry geometry = GeomFromText(polygon);
+            string str = CoordinateTransfer(polygon);
+            IGeometry geometry = GeomFromText(str);
             double minX = geometry.EnvelopeInternal.MinX;
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
@@ -1206,9 +1257,10 @@
         /// 圈选获取人口列表
         /// </summary>
         /// <param name="rkType">人口类型</param>
+        /// <param name="mapLevel"></param>
         /// <param name="polygon">圈选区域</param>
         /// <returns></returns>
-        public List<RenKou> GetRenKouListByPoly(string rkType,string polygon)
+        public List<RenKou> GetRenKouListByPoly(string rkType,string mapLevel,string polygon)
         {
             IGeometry geometry = GeomFromText(polygon);
             double minX = geometry.EnvelopeInternal.MinX;
@@ -1255,9 +1307,10 @@
         /// 圈选获取分页人口列表
         /// </summary>
         /// <param name="rkType">人口类型</param>
+        /// <param name="mapLevel"></param>
         /// <param name="polygon">圈选区域</param>
         /// <returns>分页列表</returns>
-        public List<RenKou> GetRenKouPageListByPoly(string rkType,string polygon, int pageNum, int pageSize)
+        public List<RenKou> GetRenKouPageListByPoly(string rkType,string mapLevel,string polygon, int pageNum, int pageSize)
         {
             IGeometry geometry = GeomFromText(polygon);
             double minX = geometry.EnvelopeInternal.MinX;
@@ -1452,6 +1505,22 @@
             return splist;
         }
 
+        /// <summary>
+        /// 坐标转换
+        /// </summary>
+        /// <param name="points"></param>
+        /// <returns></returns>
+        private string CoordinateTransfer(List<Point> points)
+        {
+            StringBuilder builder = new StringBuilder();
+            foreach (Point point in points)
+            {
+                builder.Append(point.ToString());
+                builder.Append(",");
+            }
+            builder.Remove(builder.Length - 1, 1);
+            return builder.ToString();
+        }
 
         /// <summary>
         /// 一键搜索接口

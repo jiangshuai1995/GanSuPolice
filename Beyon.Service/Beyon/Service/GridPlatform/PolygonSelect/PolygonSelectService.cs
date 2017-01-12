@@ -2,7 +2,7 @@
 {
     using Beyon.Domain.GridSelect;
     using Beyon.Domain.PolySelect;
-    using Beyon.WebService.GridPlatform.PolySelect;
+    using Beyon.Dao.GridPlatform.PolySelect;
     using System;
     using System.Collections.Generic;
     using System.Text;
