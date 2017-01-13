@@ -109,6 +109,7 @@
                             aj.AJZT = reader[1].ToString();
                             aj.ID = reader[2].ToString();
                             aj.BJLX = reader[6].ToString();
+                            aj.JYAQ = reader[7].ToString();
                             ajlist.Add(aj);
                         }
                     }
@@ -165,6 +166,8 @@
                             aj.AJZT = reader[1].ToString();
                             aj.ID = reader[2].ToString();
                             aj.BJLX = reader[6].ToString();
+                            aj.JYAQ = reader[7].ToString();
+
                             ajlist.Add(aj);
                         }
                     }
@@ -251,6 +254,7 @@
                             cs.MC = reader[1].ToString();
                             cs.JD = reader[2].ToString();
                             cs.WD = reader[3].ToString();
+                            cs.ID = reader[5].ToString();
                             cslist.Add(cs);
                         }
                     }
@@ -304,6 +308,7 @@
                             cs.MC = reader[1].ToString();
                             cs.JD = reader[2].ToString();
                             cs.WD = reader[3].ToString();
+                            cs.ID = reader[5].ToString();
                             cslist.Add(cs);
                         }
                     }
@@ -389,6 +394,8 @@
                             js.JS_MC = reader[3].ToString();
                             js.GAJGJD = reader[1].ToString();
                             js.GAJGWD = reader[3].ToString();
+                            js.GAJGDM = reader[9].ToString();
+                            js.GAJGJC = reader[10].ToString();
                             jslist.Add(js);
                         }
                     }
@@ -555,6 +562,8 @@
                             js.JS_MC = reader[3].ToString();
                             js.GAJGJD = reader[1].ToString();
                             js.GAJGWD = reader[3].ToString();
+                            js.GAJGDM = reader[9].ToString();
+                            js.GAJGJC = reader[10].ToString();
                             jslist.Add(js);
                         }
                     }
@@ -646,7 +655,7 @@
                     ps.jj = (long)command.ExecuteScalar();
                     command.CommandText = String.Format("SELECT count(*) FROM dbo.rkgl  WHERE type='czrk' AND jd >= '{0}' AND jd <= '{1}' AND wd >= '{2}' AND wd <= '{3}'", minX, maxX, minY, maxY);
                     ps.czrk = (long)command.ExecuteScalar();
-                    command.CommandText = String.Format("SELECT count(*) FROM dbo.fwgl  WHERE   jd >= '{0}' AND jd <= '{1}' AND wd >= '{2}' AND wd <= '{3}'", minX, maxX, minY, maxY);
+                    command.CommandText = String.Format("SELECT count(*) FROM dbo.fwgl WHERE  \"JD\" >= '{0}' AND \"JD\" <= '{1}' AND \"WD\" >= '{2}' AND \"WD\" <= '{3}'", minX, maxX, minY, maxY);
                     ps.fw = (long)command.ExecuteScalar();
                     command.CommandText = String.Format("SELECT count(*) FROM dbo.rkgl  WHERE   jd >= '{0}' AND jd <= '{1}' AND wd >= '{2}' AND wd <= '{3}'", minX, maxX, minY, maxY);
                     ps.rk = (long)command.ExecuteScalar();
@@ -880,6 +889,7 @@
                             gr.JD= reader[2].ToString();
                             gr.WD = reader[3].ToString();
                             gr.GTYPE = reader[4].ToString();
+                            gr.ZZJGDM = reader[5].ToString();
                             gridlist.Add(gr);
 
                         }
@@ -934,6 +944,7 @@
                             gr.JD = reader[2].ToString();
                             gr.WD = reader[3].ToString();
                             gr.GTYPE = reader[4].ToString();
+                            gr.ZZJGDM = reader[5].ToString();
                             gridlist.Add(gr);
                         }
                     }
@@ -977,6 +988,7 @@
                             pcsd.FZR = reader[2].ToString();
                             pcsd.JL = long.Parse(reader[3].ToString());
                             pcsd.JJ = long.Parse(reader[4].ToString());
+                            pcsd.CJ = long.Parse(reader[5].ToString());
                         }
                     }
                 }
@@ -1018,6 +1030,9 @@
                             zrqd.MC = reader[1].ToString();
                             zrqd.FZR = reader[2].ToString();
                             zrqd.ZDR = long.Parse(reader[3].ToString());
+                            zrqd.DH = reader[4].ToString();
+                            zrqd.CZRK = long.Parse(reader[5].ToString());
+                            zrqd.ZDRDQB = long.Parse(reader[6].ToString());
                         }
                     }
                 }
@@ -1177,7 +1192,6 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
-
             List<PoliceCar> carlist = new List<PoliceCar>();
 
             //1.从webconfig.config文件中获取数据库连接信息
@@ -1506,23 +1520,6 @@
         }
 
         /// <summary>
-        /// 坐标转换
-        /// </summary>
-        /// <param name="points"></param>
-        /// <returns></returns>
-        private string CoordinateTransfer(List<Point> points)
-        {
-            StringBuilder builder = new StringBuilder();
-            foreach (Point point in points)
-            {
-                builder.Append(point.ToString());
-                builder.Append(",");
-            }
-            builder.Remove(builder.Length - 1, 1);
-            return builder.ToString();
-        }
-
-        /// <summary>
         /// 一键搜索接口
         /// </summary>
         /// <param name="sjzjdw"></param>
@@ -1532,6 +1529,21 @@
         {
             throw new NotImplementedException();
         }
+
+        private string CoordinateTransfer(List<Point> points)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append("POLYGON((");
+            foreach (Point point in points)
+            {
+                builder.Append(point.X.ToString()+" "+point.Y.ToString());
+                builder.Append(",");
+            }
+            builder.Remove(builder.Length - 1, 1);
+            builder.Append("))");
+            return builder.ToString();
+        }
+
 
         #region 内部实现代码
         private IGeometry GeomFromText(String Wkt)

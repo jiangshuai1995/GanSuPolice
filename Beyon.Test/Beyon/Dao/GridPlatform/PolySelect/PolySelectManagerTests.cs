@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Beyon.Domain.GridSelect;
 using Beyon.Dao.GridPlatform.PolySelect;
+using Beyon.Service.GridPlatform.PolygonSelect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Beyon.Dao.GridPlatform.PolySelect.Tests
@@ -205,10 +206,11 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
         {
             PolySelectManager target = new PolySelectManager();
             List<Point> plist = new List<Point>();
-            plist.Add(new Point(103.8, 36));
+            plist.Add(new Point(103.8,36));
             plist.Add(new Point(103.8, 37));
             plist.Add(new Point(103.9, 36));
             plist.Add(new Point(103.9, 37));
+            plist.Add(new Point(103.8, 36));            
             var list = target.GetPoliceCarListByPoly(plist);
             Assert.AreNotEqual(list.Count, 0);
         }
@@ -217,7 +219,7 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
         public void GetRenKouCountByPolyTest()
         {
             PolySelectManager target = new PolySelectManager();
-            var count = target.GetRenKouCountByPoly("","POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
+            var count = target.GetRenKouCountByPoly(" ", "POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))");
             Assert.AreNotEqual(count, 0);
         }
 
@@ -259,5 +261,22 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
             var list = target.GetSpjkPageListByPoly("ggcs", "POLYGON((103.8 36,103.8 37,103.9 37,103.9 36, 103.8 36))",1,100);
             Assert.AreNotEqual(list.Count, 0);
         }
+
+        [TestMethod()]
+
+        public void GetCountInfoByPolyTest()
+        {
+            PolygonSelectService target = new PolygonSelectService();
+            List<Point> plist = new List<Point>();
+            plist.Add(new Point(103.8, 36));
+            plist.Add(new Point(103.8, 37));
+            plist.Add(new Point(103.9, 36));
+            plist.Add(new Point(103.9, 37));
+            plist.Add(new Point(103.8, 36));
+            var list = target.GetCountInfoByPoly("人口管理","",plist);
+            Assert.AreNotEqual(list.Count, 0);
+        }
+
+        
     }
 }

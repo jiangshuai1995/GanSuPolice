@@ -17,12 +17,14 @@ using Beyon.Domain.GridSearch;
         private string CoordinateTransfer(List<Point> points)
         {
             StringBuilder builder = new StringBuilder();
+            builder.Append("POLYGON((");
             foreach (Point point in points)
             {
-                builder.Append(point.ToString());
+                builder.Append(point.X.ToString() + " " + point.Y.ToString());
                 builder.Append(",");
             }
             builder.Remove(builder.Length - 1, 1);
+            builder.Append("))");
             return builder.ToString();
         }
 
