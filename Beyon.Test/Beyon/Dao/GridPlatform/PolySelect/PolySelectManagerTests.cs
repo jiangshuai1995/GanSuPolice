@@ -13,6 +13,8 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
     [TestClass()]
     public class PolySelectManagerTests
     {
+        #region 测试PolySelectManager
+
         [TestMethod()]
         public void GetCSCountByPolyTest()
         {
@@ -94,6 +96,7 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
             plist.Add(new Point(103.8, 37));
             plist.Add(new Point(103.9, 36));
             plist.Add(new Point(103.9, 37));
+            plist.Add(new Point(103.8, 36));
             var list = target.GetJSListByPoly("拘留所",plist);
             Assert.AreNotEqual(list.Count, 0);
         }
@@ -262,6 +265,10 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
             Assert.AreNotEqual(list.Count, 0);
         }
 
+        #endregion
+
+        #region 测试PolygonSelectSrevice
+
         [TestMethod()]
 
         public void GetCountInfoByPolyTest()
@@ -277,6 +284,56 @@ namespace Beyon.Dao.GridPlatform.PolySelect.Tests
             Assert.AreNotEqual(list.Count, 0);
         }
 
-        
+        [TestMethod()]
+        public void GetFQInfoByPolyTest1() 
+        {
+            PolygonSelectService target = new PolygonSelectService();
+            List<Point> plist = new List<Point>();
+            plist.Add(new Point(103.8, 36));
+            plist.Add(new Point(103.8, 37));
+            plist.Add(new Point(103.9, 36));
+            plist.Add(new Point(103.9, 37));
+            plist.Add(new Point(103.8, 36));
+            var list = target.GetFQInfoByPoly("", plist);
+            Assert.AreNotEqual(list, 0);
+        }
+
+        [TestMethod()]
+        public void GetListInfoByPolyTest() 
+        {
+            PolygonSelectService target = new PolygonSelectService();
+            List<Point> plist = new List<Point>();
+            plist.Add(new Point(103.8, 36));
+            plist.Add(new Point(103.8, 37));
+            plist.Add(new Point(103.9, 36));
+            plist.Add(new Point(103.9, 37));
+            plist.Add(new Point(103.8, 36));
+            var list = target.GetListInfoByPoly("人口管理","czrk","",plist);
+            Assert.AreNotEqual(list.Count,0);
+        }
+
+        [TestMethod()]
+        public void GetPageListInfoByPolyTest()
+        {
+            PolygonSelectService target = new PolygonSelectService();
+            List<Point> plist = new List<Point>();
+            plist.Add(new Point(103.8, 36));
+            plist.Add(new Point(103.8, 37));
+            plist.Add(new Point(103.9, 36));
+            plist.Add(new Point(103.9, 37));
+            plist.Add(new Point(103.8, 36));
+            var list = target.GetPageListInfoByPoly("人口管理", "czrk", "", plist, 1, 100);
+            Assert.AreNotEqual(list.Count, 0);
+        }
+
+        [TestMethod()]
+        public void GetPcsDetailByPolyTest1()
+        {
+            PolygonSelectService target = new PolygonSelectService();
+            var list = target.GetPcsDetailByPoly("1");
+            Assert.AreNotEqual(list, 0);
+        }
+
+        #endregion
     }
 }
