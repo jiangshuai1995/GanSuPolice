@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Beyon.WebService.ZhddPlatform.zzjgInfo;
+using Beyon.Dao.ZhddPlatform.zzjgInfo;
+using Beyon.Dao.ZhddPlatform;
 using Beyon.Domain.Zhdd.zjjg;
 
 namespace Beyon.Service.ZhddPlatform

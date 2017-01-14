@@ -73,6 +73,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Beyon\Dao\GridPlatform\PolySelect\PolySelectManagerTests.cs" />
+    <Compile Include="Beyon\Dao\ZhddPlatform\zzjgInfo\CyberBarManagerTest.cs" />
+    <Compile Include="Beyon\Dao\ZhddPlatform\zzjgInfo\HotelsManagerTests.cs" />
+    <Compile Include="Beyon\Dao\ZhddPlatform\zzjgInfo\PoliceOrgManagerTest.cs" />
+    <Compile Include="Beyon\Dao\ZhddPlatform\zzjgInfo\TempleManagerTest.cs" />
+    <Compile Include="Beyon\Dao\ZhddPlatform\zzjgInfo\ZzjgServiceTest.cs" />
     <Compile Include="Beyon\WebService\GridPlatform\PolySelect\PolySelectManagerTests.cs" />
     <Compile Include="CmdPlatformDataTest.cs" />
     <Compile Include="CommonTest.cs" />
