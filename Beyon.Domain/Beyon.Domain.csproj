@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <ProjectType>local</ProjectType>
+    <ProjectVersion>7.10.377</ProjectVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{63494853-5A4E-4C9D-A9B6-50F4D97B28C5}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <AssemblyName>Beyon.Domain</AssemblyName>
+    <OutputType>Library</OutputType>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\Build\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Beyon.Domain.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Beyon.Domain.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Beyon\Domain\GridSearch\Address.cs" />
+    <Compile Include="Beyon\Domain\GridSearch\CsType.cs" />
+    <Compile Include="Beyon\Domain\GridSearch\SearchResult.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\PoliceMan.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\Building.cs" />
+    <Compile Include="Beyon\Domain\PGIS\GpsInfo.cs" />
+    <Compile Include="Beyon\Domain\PGIS\GpsTrail.cs" />
+    <Compile Include="Beyon\Domain\PolySelect\JSDetail.cs" />
+    <Compile Include="Beyon\Domain\PolySelect\JSPerson.cs" />
+    <Compile Include="Beyon\Domain\PolySelect\JSPersonDetail.cs" />
+    <Compile Include="Beyon\Domain\PolySelect\PolyJS.cs" />
+    <Compile Include="Beyon\Domain\PolySelect\PolyListInfo.cs" />
+    <Compile Include="Beyon\Domain\PolySelect\PolyBuilding.cs" />
+    <Compile Include="Beyon\Domain\PolySelect\PolyPoliceCar.cs" />
+    <Compile Include="Beyon\Domain\ZHDDPT.cs" />
+    <Compile Include="Beyon\Domain\StatisticInfo.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\GridBuilding.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\DqbZDRenKou.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\CSDetailWithPic.cs" />
+    <Compile Include="Beyon\Domain\PolySelect\PcsDetail.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\GridListInfo.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\CSDetail.cs" />
+    <Compile Include="Beyon\Domain\AffairsType.cs" />
+    <Compile Include="Beyon\Domain\Jglx.cs" />
+    <Compile Include="Beyon\Domain\GAJGType.cs" />
+    <Compile Include="Beyon\Domain\JLFBType.cs" />
+    <Compile Include="Beyon\Domain\YDSBType.cs" />
+    <Compile Include="Beyon\Domain\ZBGLType.cs" />
+    <Compile Include="Beyon\Domain\AJYLBType.cs" />
+    <Compile Include="Beyon\Domain\JCJType.cs" />
+    <Compile Include="Beyon\Domain\XSAJType.cs" />
+    <Compile Include="Beyon\Domain\ZAAJType.cs" />
+    <Compile Include="Beyon\Domain\QZCSType.cs" />
+    <Compile Include="Beyon\Domain\CZRKType.cs" />
+    <Compile Include="Beyon\Domain\Zhdd\zjjg\CyberBar.cs" />
+    <Compile Include="Beyon\Domain\Zhdd\zjjg\Hotel.cs" />
+    <Compile Include="Beyon\Domain\Zhdd\zjjg\PoliceOrg.cs" />
+    <Compile Include="Beyon\Domain\Zhdd\zjjg\Temple.cs" />
+    <Compile Include="Beyon\Domain\ZZRKType.cs" />
+    <Compile Include="Beyon\Domain\ZAZDRYType.cs" />
+    <Compile Include="Beyon\Domain\DQBZDRYType.cs" />
+    <Compile Include="Beyon\Domain\GBZDRYType.cs" />
+    <Compile Include="Beyon\Domain\FXJType.cs" />
+    <Compile Include="Beyon\Domain\DWType.cs" />
+    <Compile Include="Beyon\Domain\KSSType.cs" />
+    <Compile Include="Beyon\Domain\JLSType.cs" />
+    <Compile Include="Beyon\Domain\JDSType.cs" />
+    <Compile Include="Beyon\Domain\SRSType.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\SWRY.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\BuildingDetail.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\RenKou.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\JieChuJing.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\PoliceCar.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\GridRenKou.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\ZDRenKou.cs" />
+    <Compile Include="Beyon\Domain\PolySelect\Video.cs" />
+    <Compile Include="Beyon\Domain\PolySelect\PolyCS.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\Video.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\AnJian.cs" />
+    <Compile Include="Beyon\Domain\PolySelect\ZrqDetail.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\GridInfo.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\GridFLDM.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\GridCountInfo.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\ChangSuo.cs" />
+    <Compile Include="Beyon\Domain\PolySelect\PolyCountInfo.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\PoliceManDetail.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\LvKe.cs" />
+    <Compile Include="Beyon\Domain\PolySelect\PolySummary.cs" />
+    <Compile Include="Beyon\Domain\TJSJ.cs" />
+    <Compile Include="Beyon\Domain\IScreenRow.cs" />
+    <Compile Include="Beyon\Domain\JosnAnalysisDataTable.cs" />
+    <Compile Include="Beyon\Domain\GAJGCoordinate.cs" />
+    <Compile Include="Beyon\Domain\GridSelect\GridSummary.cs" />
+    <Compile Include="Beyon\Domain\RemarkAttribute.cs" />
+    <Compile Include="Beyon\Domain\EnumExtension.cs" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Beyon.Common\Beyon.Common.csproj">
+      <Project>{86AB842F-3894-424E-A6DD-9781A1617C94}</Project>
+      <Name>Beyon.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+</Project>
