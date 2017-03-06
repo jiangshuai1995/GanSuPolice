@@ -36,6 +36,15 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
+            //因为世界地图边界问题
+            if (minX < 100)
+                minX = 100;
+            if (minY < 10)
+                minY = 10;
+            if (maxY >= 100)
+                maxY = 90;
+            if (maxX < 100)
+                maxX = 100;
 
             //1.从webconfig.config文件中获取数据库连接信息
             String connect = ConfigHelper.GetValueByKey("webservice.config", "localSQL");
@@ -80,6 +89,15 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
+            //因为世界地图边界问题
+            if (minX < 100)
+                minX = 100;
+            if (minY < 10)
+                minY = 10;
+            if (maxY >= 100)
+                maxY = 90;
+            if (maxX < 100)
+                maxX = 100;
 
             List<AnJian> ajlist = new List<AnJian>();
 
@@ -134,6 +152,21 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
+            //因为世界地图边界问题
+            if (minX < 100)
+                minX = 100;
+            if (minY < 10)
+                minY = 10;
+            if (maxY >= 100)
+                maxY = 90;
+            if (maxX < 100)
+                maxX = 100;
+            if (ajType == "接处警")
+                ajType = "jj";
+            if (ajType == "治安案件")
+                ajType = "zala";
+            if (ajType == "刑事案件")
+                ajType = "xsla";
 
             int offset = (pageNum - 1) * pageSize;
             int limit = pageSize;
@@ -167,6 +200,8 @@
                             aj.ID = reader[2].ToString();
                             aj.BJLX = reader[6].ToString();
                             aj.JYAQ = reader[7].ToString();
+                            aj.JD = reader[5].ToString();
+                            aj.WD = reader[3].ToString();
 
                             ajlist.Add(aj);
                         }
@@ -189,7 +224,14 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
-
+            if (minX < 100)
+                minX = 100;
+            if (minY < 10)
+                minY = 10;
+            if (maxY >= 100)
+                maxY = 90;
+            if (maxX < 100)
+                maxX = 100;
             //1.从webconfig.config文件中获取数据库连接信息
             String connect = ConfigHelper.GetValueByKey("webservice.config", "localSQL");
 
@@ -276,7 +318,69 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
+            if (minX < 100)
+                minX = 100;
+            if (minY < 10)
+                minY = 10;
+            if (maxY >= 100)
+                maxY = 90;
+            if (maxX < 100)
+                maxX = 100;
+            switch (csType) 
+            { 
+                case "娱乐场所":
+                    csType = "CS_YLCS_PT";
+                    break;
+                case "旅店":
+                    csType = "CS_ZSFW_PT";
+                    break;
+                case "网吧":
+                    csType = "CS_HLWSWFW_PT";
+                    break;
+                case"医院":
+                    csType = "DWXX_YLWS_PT";
+                    break;
+                case"学校":
+                    csType = "DWXX_JYJG_PT";
+                    break;
+                case"金融证券":
+                    csType = "DWXX_JRZQ_PT";
+                    break;
+                case "危险品存放处":
+                    csType = "DWXX_WXPCFDDW_PT";
+                    break;
 
+                case "党政机关":
+                    csType = "DWXX_DXJG_PT";
+                    break;
+                case "寺观教堂":
+                    csType = "CS_ZJCS_PT";
+                    break;
+                case "公共活动场所":
+                    csType = "CS_GGHDCS_PT";
+                    break;
+                case "商贸市场":
+                    csType = "CS_SMCS_PT";
+                    break;
+                case "交通场所":
+                    csType = "CS_JTCS_PT";
+                    break;
+                case "体育场所":
+                    csType = "CS_TYCS_PT";
+                    break;
+                case "旅游场所":
+                    csType = "CS_LYCS_PT";
+                    break;
+                case "居民服务场所":
+                    csType = "CS_JMFWCS_PT";
+                    break;
+                case "文化场所":
+                    csType = "CS_WHCS_PT";
+                    break;
+
+
+            }
+            
             int offset = (pageNum - 1) * pageSize;
             int limit = pageSize;
 
@@ -296,7 +400,7 @@
                 using (var command = connection.CreateCommand())
                 {
                     //5.赋予查询语句
-                    command.CommandText = String.Format("SELECT * FROM dbo.csgl WHERE type='{0}'AND jd >= '{1}' AND jd <= '{2}' AND wd >= '{3}' AND wd <= '{4}'", csType, minX, maxX, minY, maxY);
+                    command.CommandText = String.Format("SELECT * FROM dbo.csgl WHERE type='{0}'AND jd >= '{1}' AND jd <= '{2}' AND wd >= '{3}' AND wd <= '{4}' offset {5} limit {6}", csType, minX, maxX, minY, maxY, offset, limit);
 
                     //6.执行查询并返回结果，如果涉及到返回多行和多列请用ExecuteReader
                     using (var reader = command.ExecuteReader())
@@ -308,15 +412,15 @@
                             cs.MC = reader[1].ToString();
                             cs.JD = reader[2].ToString();
                             cs.WD = reader[3].ToString();
-                            cs.ID = reader[5].ToString();
+                            cs.ID = reader[0].ToString();
                             cslist.Add(cs);
                         }
                     }
                 }
             }
             return cslist;
-        }
 
+        }
         private bool PtInPolygon(double jd, double wd, List<Point> polygon)
         {
             int cross_count = 0; //交点数量
@@ -365,7 +469,17 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
-
+            //因为世界地图边界问题
+            if (minX < 100)
+                minX = 100;
+            if (minY < 10)
+                minY = 10;
+            if (maxY >= 100)
+                maxY = 90;
+            if (maxX < 100)
+                maxX = 100;
+            
+            
             List<PolyJS> jslist = new List<PolyJS>();
 
             //1.从webconfig.config文件中获取数据库连接信息
@@ -676,6 +790,15 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
+            //因为世界地图边界问题
+            if (minX < 100)
+                minX = 100;
+            if (minY < 10)
+                minY = 10;
+            if (maxY >= 100)
+                maxY = 90;
+            if (maxX < 100)
+                maxX = 100;
 
             //1.从webconfig.config文件中获取数据库连接信息
             String connect = ConfigHelper.GetValueByKey("webservice.config", "localSQL");
@@ -765,6 +888,15 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
+            //因为世界地图边界问题
+            if (minX < 100)
+                minX = 100;
+            if (minY < 10)
+                minY = 10;
+            if (maxY >= 100)
+                maxY = 90;
+            if (maxX < 100)
+                maxX = 100;
 
             int offset = (pageNum - 1) * pageSize;
             int limit = pageSize;
@@ -798,7 +930,7 @@
                             building.JD = reader[1].ToString();
                             building.WD = reader[2].ToString();
                             building.JZWMC = reader[3].ToString();
-                            building.JZWDM = reader[4].ToString();
+                            building.JZWDM = reader[0].ToString();
                             result.fwList.Add(building);
                             result.fw++;
                         }
@@ -821,6 +953,15 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
+            //因为世界地图边界问题
+            if (minX < 100)
+                minX = 100;
+            if (minY < 10)
+                minY = 10;
+            if (maxY >= 100)
+                maxY = 90;
+            if (maxX < 100)
+                maxX = 100;
             //1.从webconfig.config文件中获取数据库连接信息
             String connect = ConfigHelper.GetValueByKey("webservice.config", "localSQL");
 
@@ -912,6 +1053,15 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
+            //因为世界地图边界问题
+            if (minX < 100)
+                minX = 100;
+            if (minY < 10)
+                minY = 10;
+            if (maxY >= 100)
+                maxY = 90;
+            if (maxX < 100)
+                maxX = 100;
 
             int offset = (pageNum - 1) * pageSize;
             int limit = pageSize;
@@ -1053,6 +1203,15 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
+            //因为世界地图边界问题
+            if (minX < 100)
+                minX = 100;
+            if (minY < 10)
+                minY = 10;
+            if (maxY >= 100)
+                maxY = 90;
+            if (maxX < 100)
+                maxX = 100;
 
             //1.从webconfig.config文件中获取数据库连接信息
             String connect = ConfigHelper.GetValueByKey("webservice.config", "localSQL");
@@ -1139,6 +1298,15 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
+            //因为世界地图边界问题
+            if (minX < 100)
+                minX = 100;
+            if (minY < 10)
+                minY = 10;
+            if (maxY >= 100)
+                maxY = 90;
+            if (maxX < 100)
+                maxX = 100;
 
             int offset = (pageNum - 1) * pageSize;
             int limit = pageSize;
@@ -1192,6 +1360,15 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
+            //因为世界地图边界问题
+            if (minX < 100)
+                minX = 100;
+            if (minY < 10)
+                minY = 10;
+            if (maxY >= 100)
+                maxY = 90;
+            if (maxX < 100)
+                maxX = 100;
             List<PoliceCar> carlist = new List<PoliceCar>();
 
             //1.从webconfig.config文件中获取数据库连接信息
@@ -1240,6 +1417,15 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
+            //因为世界地图边界问题
+            if (minX < 100)
+                minX = 100;
+            if (minY < 10)
+                minY = 10;
+            if (maxY >= 100)
+                maxY = 90;
+            if (maxX < 100)
+                maxX = 100;
 
             //1.从webconfig.config文件中获取数据库连接信息
             String connect = ConfigHelper.GetValueByKey("webservice.config", "localSQL");
@@ -1331,6 +1517,24 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
+            //因为世界地图边界问题
+            if (minX < 100)
+                minX = 100;
+            if (minY < 10)
+                minY = 10;
+            if (maxY >= 100)
+                maxY = 90;
+            if (maxX < 100)
+                maxX = 100;
+            switch (rkType) 
+            { 
+                case "常住人口":
+                    rkType="czrk";
+                    break;
+                case "重点人口":
+                    rkType="zdrk";
+                    break;
+            }
 
             int offset = (pageNum - 1) * pageSize;
             int limit = pageSize;
@@ -1351,7 +1555,7 @@
                 using (var command = connection.CreateCommand())
                 {
                     //5.赋予查询语句
-                    command.CommandText = String.Format("SELECT * FROM dbo.rkgl WHERE  type='{0}' AND jd >= '{1}' AND jd <= '{2}' AND wd >= '{3}' AND wd <= '{4}'", rkType, minX, maxX, minY, maxY);
+                    command.CommandText = String.Format("SELECT * FROM dbo.rkgl WHERE  type='{0}' AND jd >= '{1}' AND jd <= '{2}' AND wd >= '{3}' AND wd <= '{4}'  offset {5} limit {6}  ", rkType, minX, maxX, minY, maxY,offset,limit);
 
                     //6.执行查询并返回结果，如果涉及到返回多行和多列请用ExecuteReader
                     using (var reader = command.ExecuteReader())
@@ -1382,6 +1586,15 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
+            //因为世界地图边界问题
+            if (minX < 100)
+                minX = 100;
+            if (minY < 10)
+                minY = 10;
+            if (maxY >= 100)
+                maxY = 90;
+            if (maxX < 100)
+                maxX = 100;
 
             //1.从webconfig.config文件中获取数据库连接信息
             String connect = ConfigHelper.GetValueByKey("webservice.config", "localSQL");
@@ -1401,12 +1614,27 @@
                     long num1 = (long)command.ExecuteScalar();
                     command.CommandText = String.Format("SELECT count(*) FROM dbo.spgl WHERE type = 'bazx' AND jd >= '{0}' AND jd <= '{1}' AND wd >= '{2}' AND wd <= '{3}'", minX, maxX, minY, maxY);
                     long num2 = (long)command.ExecuteScalar();
-                    command.CommandText = String.Format("SELECT count(*) FROM dbo.spgl WHERE type = 'ckdw' AND jd >= '{0}' AND jd <= '{1}' AND wd >= '{2}' AND wd <= '{3}'", minX, maxX, minY, maxY);
+                    command.CommandText = String.Format("SELECT count(*) FROM dbo.spgl WHERE type = 'dljt' AND jd >= '{0}' AND jd <= '{1}' AND wd >= '{2}' AND wd <= '{3}'", minX, maxX, minY, maxY);
                     long num3 = (long)command.ExecuteScalar();
+                    command.CommandText = String.Format("SELECT count(*) FROM dbo.spgl WHERE type = 'nbsp' AND jd >= '{0}' AND jd <= '{1}' AND wd >= '{2}' AND wd <= '{3}'", minX, maxX, minY, maxY);
+                    long num4 = (long)command.ExecuteScalar();
+                    command.CommandText = String.Format("SELECT count(*) FROM dbo.spgl WHERE type = 'ckdw' AND jd >= '{0}' AND jd <= '{1}' AND wd >= '{2}' AND wd <= '{3}'", minX, maxX, minY, maxY);
+                    long num5 = (long)command.ExecuteScalar();
+                    command.CommandText = String.Format("SELECT count(*) FROM dbo.spgl WHERE type = 'jgcs' AND jd >= '{0}' AND jd <= '{1}' AND wd >= '{2}' AND wd <= '{3}'", minX, maxX, minY, maxY);
+                    long num6 = (long)command.ExecuteScalar();
+                    command.CommandText = String.Format("SELECT count(*) FROM dbo.spgl WHERE type = 'zdcs' AND jd >= '{0}' AND jd <= '{1}' AND wd >= '{2}' AND wd <= '{3}'", minX, maxX, minY, maxY);
+                    long num7 = (long)command.ExecuteScalar();
+                    command.CommandText = String.Format("SELECT count(*) FROM dbo.spgl WHERE type = 'ydsp' AND jd >= '{0}' AND jd <= '{1}' AND wd >= '{2}' AND wd <= '{3}'", minX, maxX, minY, maxY);
+                    long num8 = (long)command.ExecuteScalar();
                     Dictionary<string, long> dictionary = new Dictionary<string, long>();
                     dictionary.Add("公共场所", num1);
                     dictionary.Add("办案中心", num2);
-                    dictionary.Add("重点场所", num3);
+                    dictionary.Add("道路交通", num3);
+                    dictionary.Add("内部视频", num4);
+                    dictionary.Add("窗口单位", num5);
+                    dictionary.Add("监管场所", num6);
+                    dictionary.Add("重点场所", num7);
+                    dictionary.Add("移动视频", num8);
                     return dictionary;
                 }
             }
@@ -1478,6 +1706,43 @@
             double maxX = geometry.EnvelopeInternal.MaxX;
             double minY = geometry.EnvelopeInternal.MinY;
             double maxY = geometry.EnvelopeInternal.MaxY;
+            //因为世界地图边界问题
+            if (minX < 100)
+                minX = 100;
+            if (minY < 10)
+                minY = 10;
+            if (maxY >= 100)
+                maxY = 90;
+            if (maxX < 100)
+                maxX = 100;
+
+            switch (videoType) 
+            {
+                case "公共场所":
+                    videoType = "ggcs";
+                    break;
+                case "办案中心":
+                    videoType = "bazx";
+                    break;
+                case "道路交通":
+                    videoType = "dljt";
+                    break;
+                case "内部视频":
+                    videoType = "nbsp";
+                    break;
+                case "窗口单位":
+                    videoType = "ckdw";
+                    break;
+                case "监管场所":
+                    videoType = "jgcs";
+                    break;
+                case "重点场所":
+                    videoType = "zdcs";
+                    break;
+                case "移动视频":
+                    videoType = "ydsp";
+                    break;
+            }
 
             int offset = (pageNum - 1) * pageSize;
             int limit = pageSize;
@@ -1498,7 +1763,7 @@
                 using (var command = connection.CreateCommand())
                 {
                     //5.赋予查询语句
-                    command.CommandText = String.Format("SELECT * FROM dbo.spgl WHERE  type='{0}' AND jd >= '{1}' AND jd <= '{2}' AND wd >= '{3}' AND wd <= '{4}'", videoType, minX, maxX, minY, maxY);
+                    command.CommandText = String.Format("SELECT * FROM dbo.spgl WHERE  type='{0}' AND jd >= '{1}' AND jd <= '{2}' AND wd >= '{3}' AND wd <= '{4}' offset {5} limit {6} ", videoType, minX, maxX, minY, maxY,offset,limit);
 
                     //6.执行查询并返回结果，如果涉及到返回多行和多列请用ExecuteReader
                     using (var reader = command.ExecuteReader())
@@ -1539,7 +1804,8 @@
                 builder.Append(point.X.ToString()+" "+point.Y.ToString());
                 builder.Append(",");
             }
-            builder.Remove(builder.Length - 1, 1);
+            builder.Append(points[0].X.ToString()+" "+points[0].Y.ToString());
+            //builder.Remove(builder.Length - 1, 1);
             builder.Append("))");
             return builder.ToString();
         }

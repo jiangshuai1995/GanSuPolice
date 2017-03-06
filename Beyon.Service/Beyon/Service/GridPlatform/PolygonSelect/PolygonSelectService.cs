@@ -23,7 +23,8 @@ using Beyon.Domain.GridSearch;
                 builder.Append(point.X.ToString() + " " + point.Y.ToString());
                 builder.Append(",");
             }
-            builder.Remove(builder.Length - 1, 1);
+            builder.Append(points[0].X.ToString() + " " + points[0].Y.ToString());
+            //builder.Remove(builder.Length - 1, 1);
             builder.Append("))");
             return builder.ToString();
         }
@@ -63,37 +64,37 @@ using Beyon.Domain.GridSearch;
                 {
                     PolyCountInfo info6 = new PolyCountInfo {
                         Name = "公共活动场所",
-                        Count = this.polySelectManager.GetCSCountByPoly("公共活动场所", str)
+                        Count = this.polySelectManager.GetCSCountByPoly("CS_GGHDCS_PT", str)
                     };
                     list.Add(info6);
                     PolyCountInfo info7 = new PolyCountInfo {
                         Name = "商贸市场",
-                        Count = this.polySelectManager.GetCSCountByPoly("商贸市场", str)
+                        Count = this.polySelectManager.GetCSCountByPoly("CS_SMCS_PT", str)
                     };
                     list.Add(info7);
                     PolyCountInfo info8 = new PolyCountInfo {
                         Name = "交通场所",
-                        Count = this.polySelectManager.GetCSCountByPoly("交通场所", str)
+                        Count = this.polySelectManager.GetCSCountByPoly("CS_JTCS_PT", str)
                     };
                     list.Add(info8);
                     PolyCountInfo info9 = new PolyCountInfo {
                         Name = "体育场所",
-                        Count = this.polySelectManager.GetCSCountByPoly("体育场所", str)
+                        Count = this.polySelectManager.GetCSCountByPoly("CS_TYCS_PT", str)
                     };
                     list.Add(info9);
                     PolyCountInfo info10 = new PolyCountInfo {
                         Name = "旅游场所",
-                        Count = this.polySelectManager.GetCSCountByPoly("旅游场所", str)
+                        Count = this.polySelectManager.GetCSCountByPoly("CS_LYCS_PT", str)
                     };
                     list.Add(info10);
                     PolyCountInfo info11 = new PolyCountInfo {
                         Name = "居民服务场所",
-                        Count = this.polySelectManager.GetCSCountByPoly("居民服务场所", str)
+                        Count = this.polySelectManager.GetCSCountByPoly("CS_JMFWCS_PT", str)
                     };
                     list.Add(info11);
                     PolyCountInfo info12 = new PolyCountInfo {          
                         Name = "文化场所",
-                        Count = this.polySelectManager.GetCSCountByPoly("文化场所", str)
+                        Count = this.polySelectManager.GetCSCountByPoly("CS_WHCS_PT", str)
                     };
                     list.Add(info12);
                     break;
@@ -102,17 +103,17 @@ using Beyon.Domain.GridSearch;
                 {
                     PolyCountInfo info13 = new PolyCountInfo {
                         Name = "旅店",
-                        Count = this.polySelectManager.GetCSCountByPoly("旅店", str)
+                        Count = this.polySelectManager.GetCSCountByPoly("CS_ZSFW_PT", str)
                     };
                     list.Add(info13);
                     PolyCountInfo info14 = new PolyCountInfo {
                         Name = "网吧",
-                        Count = this.polySelectManager.GetCSCountByPoly("网吧", str)
+                        Count = this.polySelectManager.GetCSCountByPoly("CS_HLWSWFW_PT", str)
                     };
                     list.Add(info14);
                     PolyCountInfo info15 = new PolyCountInfo {
                         Name = "娱乐场所",
-                        Count = this.polySelectManager.GetCSCountByPoly("娱乐场所", str)
+                        Count = this.polySelectManager.GetCSCountByPoly("CS_YLCS_PT", str)
                     };
                     list.Add(info15);
                     break;
@@ -121,32 +122,32 @@ using Beyon.Domain.GridSearch;
                 {
                     PolyCountInfo info16 = new PolyCountInfo {
                         Name = "党政机关",
-                        Count = this.polySelectManager.GetCSCountByPoly("党政机关", str)
+                        Count = this.polySelectManager.GetCSCountByPoly("DWXX_DXJG_PT", str)
                     };
                     list.Add(info16);
                     PolyCountInfo info17 = new PolyCountInfo {
                         Name = "寺观教堂",
-                        Count = this.polySelectManager.GetCSCountByPoly("寺观教堂", str)
+                        Count = this.polySelectManager.GetCSCountByPoly("CS_ZJCS_PT", str)
                     };
                     list.Add(info17);
                     PolyCountInfo info18 = new PolyCountInfo {
                         Name = "医院",
-                        Count = this.polySelectManager.GetCSCountByPoly("医院", str)
+                        Count = this.polySelectManager.GetCSCountByPoly("DWXX_YLWS_PT", str)
                     };
                     list.Add(info18);
                     PolyCountInfo info19 = new PolyCountInfo {
                         Name = "学校",
-                        Count = this.polySelectManager.GetCSCountByPoly("学校", str)
+                        Count = this.polySelectManager.GetCSCountByPoly("DWXX_JYJG_PT", str)
                     };
                     list.Add(info19);
                     PolyCountInfo info20 = new PolyCountInfo {
                         Name = "金融证券",
-                        Count = this.polySelectManager.GetCSCountByPoly("金融证券", str)
+                        Count = this.polySelectManager.GetCSCountByPoly("DWXX_JRZQ_PT", str)
                     };
                     list.Add(info20);
                     PolyCountInfo info21 = new PolyCountInfo {
                         Name = "危险品存放处",
-                        Count = this.polySelectManager.GetCSCountByPoly("危险品存放处", str)
+                        Count = this.polySelectManager.GetCSCountByPoly("DWXX_WXPCFDDW_PT", str)
                     };
                     list.Add(info21);
                     break;
@@ -531,8 +532,44 @@ using Beyon.Domain.GridSearch;
                     }
                 case "公共场所":
                 //return list;
+                    {
+                        List<PolyCS> cSListByPoly = this.polySelectManager.GetCSPageListByPoly(secondClass, str, pageNum, pageSize);
+                        foreach (PolyCS ycs in cSListByPoly)
+                        {
+                            double.TryParse(ycs.JD, out num);
+                            double.TryParse(ycs.WD, out num2);
+                            PolyListInfo info3 = new PolyListInfo
+                            {
+                                ID = ycs.ID,
+                                Name = ycs.MC,
+                                JD = num,
+                                WD = num2
+                            };
+                            list.Add(info3);
+                        }
+                        return list;
+                    }
                 case "特种场所":
-                //return list;
+                    //return list;
+                    {
+                        List<PolyCS> cSListByPoly = this.polySelectManager.GetCSPageListByPoly(secondClass, str, pageNum, pageSize);
+                        foreach (PolyCS ycs in cSListByPoly)
+                        {
+                            double.TryParse(ycs.JD, out num);
+                            double.TryParse(ycs.WD, out num2);
+                            PolyListInfo info3 = new PolyListInfo
+                            {
+                                ID = ycs.ID,
+                                Name = ycs.MC,
+                                JD = num,
+                                WD = num2
+                            };
+                            list.Add(info3);
+                        }
+                        return list;
+                    }
+                    
+                    
                 case "重点单位":
                     {
                         List<PolyCS> cSListByPoly = this.polySelectManager.GetCSPageListByPoly(secondClass, str, pageNum, pageSize);
@@ -561,7 +598,10 @@ using Beyon.Domain.GridSearch;
                                 PolyListInfo info5 = new PolyListInfo
                                 {
                                     ID = jian.ID,
-                                    Name = jian.AJMC + "(" + jian.AJZT + ")"
+                                    Name = jian.AJMC + "(" + jian.AJZT + ")",
+                                    JD= Double.Parse(jian.JD),
+                                    WD= Double.Parse(jian.WD)
+                                    
                                 };
                                 list.Add(info5);
                             }
@@ -572,7 +612,9 @@ using Beyon.Domain.GridSearch;
                             PolyListInfo info4 = new PolyListInfo
                             {
                                 ID = jian.ID,
-                                Name = jian.BJLX + "(" + jian.AJZT + "-" + jian.ID + ")"
+                                Name = jian.BJLX + "(" + jian.AJZT + "-" + jian.ID + ")",
+                                JD= Double.Parse(jian.JD),
+                                WD= Double.Parse(jian.WD)
                             };
                             list.Add(info4);
                         }

@@ -66,6 +66,10 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Compile Include="Beyon\Service\Local\KedaVideoServiceI.cs" />
+    <Compile Include="Beyon\Service\Local\KedaVideoServiceImpl.cs" />
+    <Compile Include="Beyon\Service\Local\PoliceCarService.cs" />
+    <Compile Include="Beyon\Service\Local\VideoService.cs" />
     <Compile Include="Beyon\Service\PGisPlatform\GpsHistoryOneDayImpl.cs" />
     <Compile Include="Beyon\Service\PGisPlatform\GpsHistoryServiceI.cs" />
     <Compile Include="Beyon\Service\ZhddPlatform\ZzjgService.cs" />

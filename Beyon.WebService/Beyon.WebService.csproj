@@ -66,6 +66,9 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Compile Include="Beyon\WebService\Local\KedaVideoManager.cs" />
+    <Compile Include="Beyon\WebService\Local\PoliceCarManager.cs" />
+    <Compile Include="Beyon\WebService\Local\VideoManager.cs" />
     <Compile Include="Beyon\WebService\PGIS\GpsHistory.cs" />
     <Compile Include="Beyon\WebService\ZhddPlatform\zzjgInfo\CyberBarManager.cs" />
     <Compile Include="Beyon\WebService\ZhddPlatform\zzjgInfo\HotelManager.cs" />
@@ -81,6 +84,9 @@
     </Reference>
     <Reference Include="NLog">
       <HintPath>..\Libraries\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql">
+      <HintPath>..\packages\Npgsql.2.2.7\lib\net40\Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="Oracle.ManagedDataAccess, Version=4.121.2.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
       <HintPath>..\packages\Oracle.ManagedDataAccess.12.1.24160719\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>

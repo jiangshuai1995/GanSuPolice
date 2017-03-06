@@ -37,6 +37,16 @@
         /// 监狱备注 todo
         /// </summary>
         public string JYAQ { get; set; }
+
+        /// <summary>
+        /// 案件地点经度
+        /// </summary>
+        public string JD { get; set; }
+
+        /// <summary>
+        /// 案件地点纬度
+        /// </summary>
+        public string WD { get; set; }
     }
 }
 

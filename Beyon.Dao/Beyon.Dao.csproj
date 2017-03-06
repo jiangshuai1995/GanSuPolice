@@ -65,6 +65,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Beyon\Dao\GridPlatform\GridSelect\GridSelectManager.cs" />
     <Compile Include="Beyon\Dao\GridPlatform\PolySelect\PolySelectManager.cs" />
     <Compile Include="Beyon\Dao\ZhddPlatform\zzjgInfo\CyberBarManager.cs" />
     <Compile Include="Beyon\Dao\ZhddPlatform\zzjgInfo\HotelManager.cs" />

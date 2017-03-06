@@ -10,6 +10,12 @@
         public string GXDWMC { get; set; }
 
         public string MC { get; set; }
+
+        public string RKSL { get; set; }
+
+        public string SPSL { get; set; }
+
+        public string LXDH { get; set; }
     }
 }
 

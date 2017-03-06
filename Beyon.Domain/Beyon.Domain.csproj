@@ -77,6 +77,9 @@
     <Compile Include="Beyon\Domain\GridSearch\SearchResult.cs" />
     <Compile Include="Beyon\Domain\GridSelect\PoliceMan.cs" />
     <Compile Include="Beyon\Domain\GridSelect\Building.cs" />
+    <Compile Include="Beyon\Domain\Local\KedaVideo.cs" />
+    <Compile Include="Beyon\Domain\Local\VideoInfoModel.cs" />
+    <Compile Include="Beyon\Domain\Local\VideoTypeModel.cs" />
     <Compile Include="Beyon\Domain\PGIS\GpsInfo.cs" />
     <Compile Include="Beyon\Domain\PGIS\GpsTrail.cs" />
     <Compile Include="Beyon\Domain\PolySelect\JSDetail.cs" />

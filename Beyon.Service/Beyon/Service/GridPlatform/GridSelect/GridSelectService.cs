@@ -4,10 +4,12 @@
     using Beyon.WebService.GridPlatform.GridSelect;
     using System;
     using System.Collections.Generic;
+    using Beyon.Dao.GridPlatform.GridSelect;
 
     public class GridSelectService
     {
-        private GridSelectManager gridSelectManager = new GridSelectManager();
+        private Beyon.WebService.GridPlatform.GridSelect.GridSelectManager gridSelectManager = new Beyon.WebService.GridPlatform.GridSelect.GridSelectManager();
+        private Beyon.Dao.GridPlatform.GridSelect.GridSelectManager gs = new Dao.GridPlatform.GridSelect.GridSelectManager();
 
         public List<GridInfo> GetAllGrids()
         {
@@ -36,7 +38,8 @@
 
         public BuildingDetail GetBuildingDetail(string fwId)
         {
-            return this.gridSelectManager.GetBuildingDetail(fwId);
+            return gs.GetBuildingDetail(fwId);
+            //return this.gridSelectManager.GetBuildingDetail(fwId);
         }
 
         public List<ChangSuo> GetChangSuoList(string gridId, string type)
@@ -229,12 +232,14 @@
 
         public CSDetail GetCSDetail(string csId, string type)
         {
-            return this.gridSelectManager.GetCSDetail(csId, type);
+            return gs.GetCSDetail(csId, type);
+            //return this.gridSelectManager.GetCSDetail(csId, type);
         }
 
         public CSDetailWithPic GetCSDetailWithPic(string csId, string type)
         {
-            return this.gridSelectManager.GetCSDetailWithPic(csId, type);
+            return gs.GetCSDetailWithPic(csId, type);
+            //return this.gridSelectManager.GetCSDetailWithPic(csId, type);
         }
 
         public List<RenKou> GetCZRenKouList(string gridId)
@@ -451,7 +456,8 @@
 
         public PoliceManDetail GetPoliceManDetail(string jyid)
         {
-            return this.gridSelectManager.GetPoliceManDetail(jyid);
+            return gs.GetPoliceManDetail(jyid);
+            //return this.gridSelectManager.GetPoliceManDetail(jyid);
         }
 
         public List<PoliceMan> GetPoliceManList(string gridId)
@@ -461,7 +467,8 @@
 
         public RenKou GetRenKouDetail(string sfzh)
         {
-            return this.gridSelectManager.GetRenKouDetail(sfzh);
+            return gs.GetRenKouDetail(sfzh);
+            //return this.gridSelectManager.GetRenKouDetail(sfzh);
         }
 
         public GridSummary GetSummaryInfo(string gridId)
@@ -486,7 +493,8 @@
 
         public ZDRenKou GetZDRenKouDetail(string sfzh)
         {
-            return this.gridSelectManager.GetZDRenKouDetail(sfzh);
+            return gs.GetZDRenKouDetail(sfzh);
+            //return this.gridSelectManager.GetZDRenKouDetail(sfzh);
         }
 
         public List<RenKou> GetZDRenKouList(string gridId)
