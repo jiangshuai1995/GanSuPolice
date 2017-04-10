@@ -31,7 +31,7 @@ namespace Beyon.WebService.Local
         /// </summary>
         public VideoManager()
         {
-            connectString = ConfigHelper.GetValueByKey("webservice.config", "pgConnect");
+            connectString = ConfigHelper.GetValueByKey("webservice.config", "localSQL");
         }
 
         #endregion
