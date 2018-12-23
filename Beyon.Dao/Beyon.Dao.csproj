@@ -65,12 +65,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Beyon\Dao\GridPlatform\GridSelect\GridSelectManager.cs" />
     <Compile Include="Beyon\Dao\GridPlatform\PolySelect\PolySelectManager.cs" />
-    <Compile Include="Beyon\Dao\ZhddPlatform\zzjgInfo\CyberBarManager.cs" />
-    <Compile Include="Beyon\Dao\ZhddPlatform\zzjgInfo\HotelManager.cs" />
-    <Compile Include="Beyon\Dao\ZhddPlatform\zzjgInfo\PoliceOrgManager.cs" />
-    <Compile Include="Beyon\Dao\ZhddPlatform\zzjgInfo\TempleManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
