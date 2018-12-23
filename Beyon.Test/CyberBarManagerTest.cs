@@ -89,5 +89,17 @@ namespace Beyon.Test
             Assert.AreEqual(actual.Count >= 1, true);
             //Assert.Inconclusive("验证此测试方法的正确性。");
         }
+
+        /// <summary>
+        ///GetAllHotelsCount 的测试
+        ///</summary>
+        [TestMethod()]
+        public void GetAllWBsCount()
+        {
+            CyberBarManager target = new CyberBarManager(); // TODO: 初始化为适当的值
+            int actual = target.GetAllWBsCount();
+            Assert.AreNotEqual(0, actual);
+            //Assert.Inconclusive("验证此测试方法的正确性。");
+        }
     }
 }

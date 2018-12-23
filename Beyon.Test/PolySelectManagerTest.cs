@@ -247,5 +247,18 @@ namespace Beyon.Test
             Assert.AreEqual(expected, actual);
             Assert.Inconclusive("验证此测试方法的正确性。");
         }
+
+        ///<summary>
+        ///获取全省监所列表
+        ///</summary>
+        [TestMethod()]
+        public void GetJSListByProvinceTest() 
+        {
+            PolySelectManager target = new PolySelectManager();
+            string type = "看守所";
+            List<PolyJS> actual;
+            actual = target.GetJSListByProvince(type);
+            Assert.AreEqual(actual.Count >= 1, true);
+        }
     }
 }

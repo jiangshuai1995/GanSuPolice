@@ -79,5 +79,15 @@ namespace Beyon.Test
             Assert.AreEqual(expected, actual);
             Assert.Inconclusive("验证此测试方法的正确性。");
         }
+
+        [TestMethod()]
+        public void GetZDRenKouDetailTest() 
+        {
+            ZDRenKou expected = new ZDRenKou();
+            ZDRenKou actual;
+            GridSelectService gridSelectService = new GridSelectService();
+            actual = gridSelectService.GetZDRenKouDetail("");
+            Assert.AreEqual(expected, actual);
+        }
     }
 }

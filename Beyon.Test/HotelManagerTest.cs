@@ -106,5 +106,18 @@ namespace Beyon.Test
             Assert.AreEqual(expected, actual);
             Assert.Inconclusive("验证此测试方法的正确性。");
         }
+
+        /// <summary>
+        ///GetAllHotelsCount 的测试
+        ///</summary>
+        [TestMethod()]
+        public void GetAllHoteCount()
+        {
+            HotelManager target = new HotelManager(); // TODO: 初始化为适当的值
+            List<Hotel> expected = null; // TODO: 初始化为适当的值
+            int actual = target.GetAllHotelCount();
+            Assert.AreNotEqual(0, actual);
+            //Assert.Inconclusive("验证此测试方法的正确性。");
+        }
     }
 }
