@@ -82,6 +82,7 @@
     <Compile Include="Beyon\Domain\Local\VideoTypeModel.cs" />
     <Compile Include="Beyon\Domain\PGIS\GpsInfo.cs" />
     <Compile Include="Beyon\Domain\PGIS\GpsTrail.cs" />
+    <Compile Include="Beyon\Domain\PGIS\PoliceInfo.cs" />
     <Compile Include="Beyon\Domain\PolySelect\JSDetail.cs" />
     <Compile Include="Beyon\Domain\PolySelect\JSPerson.cs" />
     <Compile Include="Beyon\Domain\PolySelect\JSPersonDetail.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Beyon\Domain\ZAAJType.cs" />
     <Compile Include="Beyon\Domain\QZCSType.cs" />
     <Compile Include="Beyon\Domain\CZRKType.cs" />
+    <Compile Include="Beyon\Domain\Zhdd\zjjg\Barrier.cs" />
     <Compile Include="Beyon\Domain\Zhdd\zjjg\CyberBar.cs" />
     <Compile Include="Beyon\Domain\Zhdd\zjjg\Hotel.cs" />
     <Compile Include="Beyon\Domain\Zhdd\zjjg\PoliceOrg.cs" />

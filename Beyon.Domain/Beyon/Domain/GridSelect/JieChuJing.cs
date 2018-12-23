@@ -5,7 +5,7 @@
 
     public class JieChuJing
     {
-        public string BJNR { get; set; }
+        public string BJLX { get; set; }
 
         public string CJBS { get; set; }
 

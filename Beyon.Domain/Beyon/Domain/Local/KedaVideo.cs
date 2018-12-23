@@ -10,6 +10,8 @@ namespace Beyon.Domain.Local
     /// </summary>
     public class KedaVideo
     {
+        private int defaultSource = 0;
+
         /// <summary>
         /// 国标ID
         /// </summary>
@@ -44,5 +46,8 @@ namespace Beyon.Domain.Local
         /// 通道
         /// </summary>
         public string channel { get; set; }
+
+        
+        public int source { set { defaultSource = value; } get { return defaultSource; } }
     }
 }
