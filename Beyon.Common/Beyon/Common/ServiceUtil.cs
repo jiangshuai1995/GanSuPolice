@@ -266,26 +266,6 @@
         //private static bool hasUse = false;
         public static string GetRemoteXmlStream(string url, WebProxy proxy)
         {
-            //if (hasUse)
-            //{
-            //    return File.ReadAllText(@"D:\lin\projects\data\json1.txt", System.Text.Encoding.UTF8);
-            //}
-            //else
-            //{
-            //    hasUse = true;
-            //    return File.ReadAllText(@"D:\lin\projects\data\json.txt", System.Text.Encoding.UTF8);
-            //}
-
-            //if (hasUse)
-            //{
-            //    return File.ReadAllText(@"D:\lin\projects\data\获取同比值.txt", System.Text.Encoding.UTF8);
-            //}
-            //else
-            //{
-            //    hasUse = true;
-            //    return File.ReadAllText(@"D:\lin\projects\data\获取Polygon.txt", System.Text.Encoding.UTF8);
-            //}
-
             WebRequest request = null;
             try
             {
