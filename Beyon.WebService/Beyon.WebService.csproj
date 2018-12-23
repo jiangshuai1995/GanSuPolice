@@ -70,6 +70,8 @@
     <Compile Include="Beyon\WebService\Local\PoliceCarManager.cs" />
     <Compile Include="Beyon\WebService\Local\VideoManager.cs" />
     <Compile Include="Beyon\WebService\PGIS\GpsHistory.cs" />
+    <Compile Include="Beyon\WebService\PGIS\PoliceCarService.cs" />
+    <Compile Include="Beyon\WebService\ZhddPlatform\zzjgInfo\BarrierManager.cs" />
     <Compile Include="Beyon\WebService\ZhddPlatform\zzjgInfo\CyberBarManager.cs" />
     <Compile Include="Beyon\WebService\ZhddPlatform\zzjgInfo\HotelManager.cs" />
     <Compile Include="Beyon\WebService\ZhddPlatform\zzjgInfo\PoliceOrgManager.cs" />
@@ -77,6 +79,9 @@
     <Reference Include="linq2db, Version=1.0.7.4, Culture=neutral, PublicKeyToken=f19f8aed7feff67e, processorArchitecture=MSIL">
       <HintPath>..\packages\linq2db.1.0.7.4\lib\net40\linq2db.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="MySql.Data">
+      <HintPath>..\Libraries\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

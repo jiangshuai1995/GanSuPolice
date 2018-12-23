@@ -6,6 +6,8 @@ using System.Diagnostics;
 using Beyon.Common;
 using Beyon.Domain.Local;
 using Npgsql;
+using System.Data.Common;
+using MySql.Data.MySqlClient;
 
 namespace Beyon.WebService.Local
 {
@@ -22,6 +24,11 @@ namespace Beyon.WebService.Local
         /// </summary>
         private String connectString;
 
+        /// <summary>
+        /// 柯达视频库连接信息
+        /// </summary>
+        private String KedaConnectString;
+
         #endregion
 
         #region Constructors
@@ -31,7 +38,9 @@ namespace Beyon.WebService.Local
         /// </summary>
         public VideoManager()
         {
-            connectString = ConfigHelper.GetValueByKey("webservice.config", "localSQL");
+            connectString = ConfigHelper.GetValueByKey("webservice.config", "pgConnect");
+            KedaConnectString = ConfigHelper.GetValueByKey("webservice.config", "kedaMysqlConnect");
+            
         }
 
         #endregion
@@ -45,65 +54,105 @@ namespace Beyon.WebService.Local
         public List<VideoInfoModel> GetAllVideos()
         {
             List<VideoInfoModel> list = new List<VideoInfoModel>();
-
-            using (NpgsqlConnection conn = new NpgsqlConnection(connectString))
+            String mysql = string.Format("select gbid, kdid, kddomainid, name, longitude, latitude, channel from tblGbDevice ");
+            try
             {
-                try
+                using (DbConnection conn = new MySqlConnection(this.KedaConnectString))
                 {
                     conn.Open();
-
-                    String sql_first = "select kdid55,name,jd,wd,gbid from gbid";
-                    NpgsqlCommand cmd_first = new NpgsqlCommand(sql_first, conn);
-                    NpgsqlDataReader reader_first = cmd_first.ExecuteReader();
-                    while (reader_first.Read())
+                    using (DbCommand cmd = conn.CreateCommand())
                     {
-                        //这些字段值都有可能是空的
-                        if (reader_first.IsDBNull(0) || reader_first.IsDBNull(1) || reader_first.IsDBNull(2) ||
-                            reader_first.IsDBNull(3) || reader_first.IsDBNull(4))
+                        cmd.CommandText = mysql;
+                        using (DbDataReader reader = cmd.ExecuteReader())
                         {
-                            continue;
+                            while (reader.Read())
+                            {
+                                if (reader.IsDBNull(0) || reader.IsDBNull(1) || reader.IsDBNull(2) ||
+                                reader.IsDBNull(3) || reader.IsDBNull(4))
+                                {
+                                    continue;
+                                }
+
+                                VideoInfoModel v = new VideoInfoModel();
+                                v.Gbid = reader[0].ToString();
+                                v.DeviceId = reader[1].ToString();
+                                v.DomainId = reader[2].ToString();
+                                v.VideoName = reader[3].ToString();
+                                double longitude;
+                                if (Double.TryParse(reader[4].ToString(), out longitude))
+                                    v.X = longitude;
+                                double latitude;
+                                if (Double.TryParse(reader[5].ToString(), out latitude))
+                                    v.Y = latitude;
+                                v.VideoChannel = reader[6].ToString();
+                                list.Add(v);
+                            }
                         }
 
-                        VideoInfoModel video = new VideoInfoModel();
-                        video.VideoChannel = reader_first.GetString(0);
-                        video.VideoName = reader_first.GetString(1);
-                        video.X = reader_first.GetDouble(2);
-                        video.Y = reader_first.GetDouble(3);
-                        video.FactoryName = "gb";
-                        video.VideoPort = "0";
-                        video.VideoSource = 2;
-                        video.Gbid = reader_first.GetString(4);
-                        list.Add(video);
-                    } //end while
-
-                    String sql_second = "select puid,name,longitude,latitude,channel,vendor,source from gbid1";
-                    NpgsqlCommand cmd_second = new NpgsqlCommand(sql_second, conn);
-                    NpgsqlDataReader reader_second = cmd_second.ExecuteReader();
-                    while (reader_second.Read())
-                    {
-                        if (reader_second.IsDBNull(0) || reader_second.IsDBNull(1) || reader_second.IsDBNull(2) ||
-                            reader_second.IsDBNull(3) ||
-                            reader_second.IsDBNull(4) || reader_second.IsDBNull(5) || reader_second.IsDBNull(6))
-                        {
-                            continue;
-                        }
-                        VideoInfoModel video = new VideoInfoModel();
-                        video.VideoChannel = reader_second.GetString(0);
-                        video.VideoName = reader_second.GetString(1);
-                        video.X = reader_second.GetDouble(2);
-                        video.Y = reader_second.GetDouble(3);
-                        video.VideoPort = reader_second[4].ToString();
-                        video.FactoryName = reader_second.GetString(5);
-                        video.VideoSource = Convert.ToInt32(reader_second[6]);
-                        list.Add(video);
-                    } //end while
+                    }
                 }
-                catch (Exception ex)
+                /*using (NpgsqlConnection conn = new NpgsqlConnection(connectString))
                 {
-                    LogMgr.Instance.Error("日志记录", ex);
-                }
-            }
+                    try
+                    {
+                        conn.Open();
 
+                        String sql_first = "select kdid55,name,jd,wd,gbid from gbid";
+                        NpgsqlCommand cmd_first = new NpgsqlCommand(sql_first, conn);
+                        NpgsqlDataReader reader_first = cmd_first.ExecuteReader();
+                        while (reader_first.Read())
+                        {
+                            //这些字段值都有可能是空的
+                            if (reader_first.IsDBNull(0) || reader_first.IsDBNull(1) || reader_first.IsDBNull(2) ||
+                                reader_first.IsDBNull(3) || reader_first.IsDBNull(4))
+                            {
+                                continue;
+                            }
+
+                            VideoInfoModel video = new VideoInfoModel();
+                            video.VideoChannel = reader_first.GetString(0);
+                            video.VideoName = reader_first.GetString(1);
+                            video.X = reader_first.GetDouble(2);
+                            video.Y = reader_first.GetDouble(3);
+                            video.FactoryName = "gb";
+                            video.VideoPort = "0";
+                            video.VideoSource = 2;
+                            video.Gbid = reader_first.GetString(4);
+                            list.Add(video);
+                        } //end while
+
+                        String sql_second = "select puid,name,longitude,latitude,channel,vendor,source from gbid1";
+                        NpgsqlCommand cmd_second = new NpgsqlCommand(sql_second, conn);
+                        NpgsqlDataReader reader_second = cmd_second.ExecuteReader();
+                        while (reader_second.Read())
+                        {
+                            if (reader_second.IsDBNull(0) || reader_second.IsDBNull(1) || reader_second.IsDBNull(2) ||
+                                reader_second.IsDBNull(3) ||
+                                reader_second.IsDBNull(4) || reader_second.IsDBNull(5) || reader_second.IsDBNull(6))
+                            {
+                                continue;
+                            }
+                            VideoInfoModel video = new VideoInfoModel();
+                            video.VideoChannel = reader_second.GetString(0);
+                            video.VideoName = reader_second.GetString(1);
+                            video.X = reader_second.GetDouble(2);
+                            video.Y = reader_second.GetDouble(3);
+                            video.VideoPort = reader_second[4].ToString();
+                            video.FactoryName = reader_second.GetString(5);
+                            video.VideoSource = Convert.ToInt32(reader_second[6]);
+                            list.Add(video);
+                        } //end while
+                    }
+                    catch (Exception ex)
+                    {
+                        LogMgr.Instance.Error("日志记录", ex);
+                    }
+                } */
+            }
+            catch (Exception ex) 
+            {
+                LogMgr.Instance.Error("日志记录", ex);
+            }
             return list;
         }
 
@@ -126,7 +175,49 @@ namespace Beyon.WebService.Local
             double latitude_right)
         {
             List<VideoInfoModel> list = new List<VideoInfoModel>();
-            using (NpgsqlConnection conn = new NpgsqlConnection(connectString))
+            String mysql = string.Format("select gbid, kdid, kddomainid, name, longitude, latitude, channel from tblGbDevice where longitude between {0} and {1} and latitude between {2} and {3}  ",longitude_left,longitude_right,latitude_left,latitude_right);
+            try
+            {
+                using (DbConnection conn = new MySqlConnection(this.KedaConnectString))
+                {
+                    conn.Open();
+                    using (DbCommand cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = mysql;
+                        using (DbDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                if (reader.IsDBNull(0) || reader.IsDBNull(1) || reader.IsDBNull(2) ||
+                                reader.IsDBNull(3) || reader.IsDBNull(4))
+                                {
+                                    continue;
+                                }
+
+                                VideoInfoModel v = new VideoInfoModel();
+                                v.Gbid = reader[0].ToString();
+                                v.DeviceId = reader[1].ToString();
+                                v.DomainId = reader[2].ToString();
+                                v.VideoName = reader[3].ToString();
+                                double longitude;
+                                if (Double.TryParse(reader[4].ToString(), out longitude))
+                                    v.X = longitude;
+                                double latitude;
+                                if (Double.TryParse(reader[5].ToString(), out latitude))
+                                    v.Y = latitude;
+                                v.VideoChannel = reader[6].ToString();
+                                list.Add(v);
+                            }
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex) 
+            {
+                LogMgr.Instance.Error("日志记录", ex);
+            }
+            /*using (NpgsqlConnection conn = new NpgsqlConnection(connectString))
             {
                 try
                 {
@@ -185,7 +276,7 @@ namespace Beyon.WebService.Local
                 {
                     LogMgr.Instance.Error("日志记录", ex);
                 }
-            }
+            } */
             return list;
         }
 
@@ -197,7 +288,81 @@ namespace Beyon.WebService.Local
         public List<VideoInfoModel> GetSpecificVideos(VideoTypeModel.VideoType type)
         {
             List<VideoInfoModel> list = new List<VideoInfoModel>();
-            using (NpgsqlConnection conn = new NpgsqlConnection(connectString))
+            try
+            {
+                using (DbConnection conn = new MySqlConnection(this.KedaConnectString))
+                {
+                    conn.Open();
+                    String sql = null;
+                    switch (type)
+                    {
+                        case VideoTypeModel.VideoType.KeyArea:
+                            sql = "select gbid, kdid, kddomainid, name, longitude, latitude, channel from tblGbDevice where civilCode is not null and length(civilCode)=8 and substr(civilCode,length(civilCode)-1,2) between '60' and '65'";
+                            break;
+                        case VideoTypeModel.VideoType.RoadTraffic:
+                            sql = "select gbid, kdid, kddomainid, name, longitude, latitude, channel from tblGbDevice where civilCode is not null and length(civilCode)=8 and substr(civilCode,length(civilCode)-1,2) between '66' and '69'";
+                            break;
+                        case VideoTypeModel.VideoType.PublicArea:
+                            sql = "select gbid, kdid, kddomainid, name, longitude, latitude, channel from tblGbDevice where civilCode is not null and length(civilCode)=8 and substr(civilCode,length(civilCode)-1,2) between '70' and '75'";
+                            break;
+                        case VideoTypeModel.VideoType.SuperviseArea:
+                            sql = "select gbid, kdid, kddomainid, name, longitude, latitude, channel from tblGbDevice where civilCode is not null and length(civilCode)=8 and substr(civilCode,length(civilCode)-1,2) = '92'";
+                            break;
+                        case VideoTypeModel.VideoType.CaseCenter:
+                            sql = "select gbid, kdid, kddomainid, name, longitude, latitude, channel from tblGbDevice where civilCode is not null and length(civilCode)=8 and substr(civilCode,length(civilCode)-1,2) = '93'";
+                            break;
+                        case VideoTypeModel.VideoType.WindowUnit:
+                            sql = "select gbid, kdid, kddomainid, name, longitude, latitude, channel from tblGbDevice where civilCode is not null and length(civilCode)=8 and substr(civilCode,length(civilCode)-1,2) = '94'";
+                            break;
+                        case VideoTypeModel.VideoType.MoveableVideo:
+                            sql = "select gbid, kdid, kddomainid, name, longitude, latitude, channel from tblGbDevice where civilCode is not null and length(civilCode)=8 and substr(civilCode,length(civilCode)-1,2) = '77'";
+                            break;
+                        case VideoTypeModel.VideoType.InternalVideo:
+                            sql = "select gbid, kdid, kddomainid, name, longitude, latitude, channel from tblGbDevice where civilCode is not null and length(civilCode)=8 and substr(civilCode,length(civilCode)-1,2) = '78'";
+                            break;
+                        default:
+                            break;
+                    }
+                    if (sql != null)
+                    {
+                        using (DbCommand cmd = conn.CreateCommand())
+                        {
+                            cmd.CommandText = sql;
+                            using (DbDataReader reader = cmd.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    if (reader.IsDBNull(0) || reader.IsDBNull(1) || reader.IsDBNull(2) ||
+                                    reader.IsDBNull(3) || reader.IsDBNull(4))
+                                    {
+                                        continue;
+                                    }
+
+                                    VideoInfoModel v = new VideoInfoModel();
+                                    v.Gbid = reader[0].ToString();
+                                    v.DeviceId = reader[1].ToString();
+                                    v.DomainId = reader[2].ToString();
+                                    v.VideoName = reader[3].ToString();
+                                    double longitude;
+                                    if (Double.TryParse(reader[4].ToString(), out longitude))
+                                        v.X = longitude;
+                                    double latitude;
+                                    if (Double.TryParse(reader[5].ToString(), out latitude))
+                                        v.Y = latitude;
+                                    v.VideoChannel = reader[6].ToString();
+                                    list.Add(v);
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) 
+            {
+                LogMgr.Instance.Error("日志记录", ex);
+            }
+            /*using (NpgsqlConnection conn = new NpgsqlConnection(connectString))
             {
                 try
                 {
@@ -267,7 +432,7 @@ namespace Beyon.WebService.Local
                 {
                     LogMgr.Instance.Error("日志记录", ex);
                 }
-            }
+            }*/
             return list;
         }
 
@@ -284,7 +449,83 @@ namespace Beyon.WebService.Local
             double longitude_right, double latitude_right, VideoTypeModel.VideoType type)
         {
             List<VideoInfoModel> list = new List<VideoInfoModel>();
-            using (NpgsqlConnection conn = new NpgsqlConnection(connectString))
+            try{
+                using (DbConnection conn = new MySqlConnection(this.KedaConnectString)) 
+                { 
+                    String mysql = string.Format("select gbid, kdid, kddomainid, name, longitude, latitude, channel from tblGbDevice where longitude between {0} and {1} and latitude between {2} and {3} and length(civilCode)=8 ",longitude_left,longitude_right,latitude_left,latitude_right);
+                    String sql_type=null;
+                    conn.Open();
+                    switch (type)
+                    {
+                        case VideoTypeModel.VideoType.KeyArea:
+                            sql_type = " and substr(civilcode,length(civilcode)-1,2) between '60' and '65'";
+                            break;
+                        case VideoTypeModel.VideoType.RoadTraffic:
+                            sql_type = " and substr(civilcode,length(civilcode)-1,2) between '66' and '69'";
+                            break;
+                        case VideoTypeModel.VideoType.PublicArea:
+                            sql_type = " and substr(civilcode,length(civilcode)-1,2) between '70' and '75'";
+                            break;
+                        case VideoTypeModel.VideoType.SuperviseArea:
+                            sql_type = " and substr(civilcode,length(civilcode)-1,2) = '92'";
+                            break;
+                        case VideoTypeModel.VideoType.CaseCenter:
+                            sql_type = " and substr(civilcode,length(civilcode)-1,2) = '93'";
+                            break;
+                        case VideoTypeModel.VideoType.WindowUnit:
+                            sql_type = " and substr(civilcode,length(civilcode)-1,2) = '94'";
+                            break;
+                        case VideoTypeModel.VideoType.MoveableVideo:
+                            sql_type = " and substr(civilcode,length(civilcode)-1,2) = '77'";
+                            break;
+                        case VideoTypeModel.VideoType.InternalVideo:
+                            sql_type = " and substr(civilcode,length(civilcode)-1,2) = '78'";
+                            break;
+                        default:
+                            break;
+                    }//end switch
+                    if (sql_type != null)
+                    {
+                        mysql = mysql + sql_type;
+                        using (DbCommand cmd = conn.CreateCommand())
+                        {
+                            cmd.CommandText = mysql;
+                            using (DbDataReader reader = cmd.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    if (reader.IsDBNull(0) || reader.IsDBNull(1) || reader.IsDBNull(2) ||
+                                    reader.IsDBNull(3) || reader.IsDBNull(4))
+                                    {
+                                        continue;
+                                    }
+
+                                    VideoInfoModel v = new VideoInfoModel();
+                                    v.Gbid = reader[0].ToString();
+                                    v.DeviceId = reader[1].ToString();
+                                    v.DomainId = reader[2].ToString();
+                                    v.VideoName = reader[3].ToString();
+                                    double longitude;
+                                    if (Double.TryParse(reader[4].ToString(), out longitude))
+                                        v.X = longitude;
+                                    double latitude;
+                                    if (Double.TryParse(reader[5].ToString(), out latitude))
+                                        v.Y = latitude;
+                                    v.VideoChannel = reader[6].ToString();
+                                    list.Add(v);
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                    LogMgr.Instance.Error("日志记录", ex);
+            
+            }
+            /*using (NpgsqlConnection conn = new NpgsqlConnection(connectString))
             {
                 String sql =
                     String.Format(
@@ -351,7 +592,7 @@ namespace Beyon.WebService.Local
                 {
                     LogMgr.Instance.Error("日志记录", ex);
                 }
-            }
+            }*/
             return list;
         }
 
@@ -431,7 +672,53 @@ namespace Beyon.WebService.Local
                 default:
                     break;
             }
-            using (NpgsqlConnection conn = new NpgsqlConnection(connectString))
+            try
+            {
+                using (DbConnection conn = new MySqlConnection(this.KedaConnectString))
+                {
+                    conn.Open();
+
+                    String sql = "select gbid, kdid, kddomainid, name, longitude, latitude, channel from tblGbDevice where civilCode is not null and length(civilCode)=8 and substr(civilCode,length(civilCode)-1,2) = '92' and name like ";
+                    if (sql_suffix != null)
+                    {
+
+                        using (DbCommand cmd = conn.CreateCommand())
+                        {
+                            cmd.CommandText = sql+sql_suffix;
+                            using (DbDataReader reader = cmd.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    if (reader.IsDBNull(0) || reader.IsDBNull(1) || reader.IsDBNull(2) ||
+                                    reader.IsDBNull(3) || reader.IsDBNull(4))
+                                    {
+                                        continue;
+                                    }
+
+                                    VideoInfoModel v = new VideoInfoModel();
+                                    v.Gbid = reader[0].ToString();
+                                    v.DeviceId = reader[1].ToString();
+                                    v.DomainId = reader[2].ToString();
+                                    v.VideoName = reader[3].ToString();
+                                    double longitude;
+                                    if (Double.TryParse(reader[4].ToString(), out longitude))
+                                        v.X = longitude;
+                                    double latitude;
+                                    if (Double.TryParse(reader[5].ToString(), out latitude))
+                                        v.Y = latitude;
+                                    v.VideoChannel = reader[6].ToString();
+                                    list.Add(v);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) 
+            { 
+            
+            }
+            /*using (NpgsqlConnection conn = new NpgsqlConnection(connectString))
             {
                 try
                 {
@@ -519,7 +806,7 @@ namespace Beyon.WebService.Local
                 {
                     LogMgr.Instance.Error("日志记录", ex);
                 }
-            }
+            }*/
             return list;
         }
 
@@ -532,7 +819,48 @@ namespace Beyon.WebService.Local
         public List<VideoInfoModel> GetVideoNearPoint(double latitude, double longitude)
         {
             List<VideoInfoModel> list = new List<VideoInfoModel>();
-            using (NpgsqlConnection conn = new NpgsqlConnection(connectString))
+            try
+            {
+                using (DbConnection conn = new MySqlConnection(KedaConnectString)) 
+                {
+                    conn.Open();
+                    String sql = String.Format("select gbid, kdid, kddomainid, name, longitude, latitude, channel from tblGbDevice where longitude between {0} and {1} and latitude between {2} and {3}", longitude - 0.0001, longitude + 0.0001, latitude - 0.0001, latitude + 0.0001);
+                    using (DbCommand cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = sql;
+                        using (DbDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                if (reader.IsDBNull(0) || reader.IsDBNull(1) || reader.IsDBNull(2) ||
+                                reader.IsDBNull(3) || reader.IsDBNull(4))
+                                {
+                                    continue;
+                                }
+
+                                VideoInfoModel v = new VideoInfoModel();
+                                v.Gbid = reader[0].ToString();
+                                v.DeviceId = reader[1].ToString();
+                                v.DomainId = reader[2].ToString();
+                                v.VideoName = reader[3].ToString();
+                                double x;
+                                if (Double.TryParse(reader[4].ToString(), out x))
+                                    v.X = x;
+                                double y;
+                                if (Double.TryParse(reader[5].ToString(), out y))
+                                    v.Y = y;
+                                v.VideoChannel = reader[6].ToString();
+                                list.Add(v);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) 
+            {
+                LogMgr.Instance.Error("日志记录", ex);
+            }
+            /*using (NpgsqlConnection conn = new NpgsqlConnection(connectString))
             {
                 try
                 {
@@ -620,7 +948,7 @@ namespace Beyon.WebService.Local
                 {
                     LogMgr.Instance.Error("日志记录", ex);
                 }
-            }
+            }*/
             return list;
         }
 

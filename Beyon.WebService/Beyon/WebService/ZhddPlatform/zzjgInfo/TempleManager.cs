@@ -42,17 +42,28 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
             {
                 using (OleDbConnection conn = new OleDbConnection(this.zzjgDBConnectBuilder.ConnectionString))
                 {
-                    String sql = "select bh, csmc, xxdz, xqpcs, jyqk, cszpid, zjcsjd, zjcswd, key_zd from ZZJGXT.csgl_zjcsinfo t where  zjcsjd is not null and zjcswd is not null and zjcsjd >= ? and zjcswd >= ? and zjcsjd <= ? and zjcswd <= ?";
+
+                    bool useParameter = false;
+                    String sql = "select t.CSBM, t.CSMC, a.DZMC, t.DJDW_GAJGMC,t.DLJD, t.DLWD  from B_ZTK_SP_SMJT t,b_ztk_sp_bzdz_dx a  where t.DZ=a.DZBM AND t.DLJD is not null and t.DLWD is not null";
+                    if(minX >= 100||maxX<=90)
+                    {
+                        useParameter = true;
+                        sql = "select t.CSBM, t.CSMC, a.DZMC, t.DJDW_GAJGMC,t.DLJD, DLWD  from B_ZTK_SP_SMJT  t,B_ZTK_SP_BZDZ_DX a  where  t.DLJD is not null and t.DLWD is not null and t.DLJD >= ? and t.DLWD >= ? and t.DLJD <= ? and t.DLWD <= ?  AND t.DZ=a.DZBM";
+                    }
+                    
                     conn.Open();
                     OleDbCommand cmd = new OleDbCommand(sql, conn);
-                    cmd.Parameters.Add(new OleDbParameter("@minX", OleDbType.VarChar));
-                    cmd.Parameters[0].Value = minX;
-                    cmd.Parameters.Add(new OleDbParameter("@minY", OleDbType.VarChar));
-                    cmd.Parameters[1].Value = minY;
-                    cmd.Parameters.Add(new OleDbParameter("@maxX", OleDbType.VarChar));
-                    cmd.Parameters[2].Value = maxX;
-                    cmd.Parameters.Add(new OleDbParameter("@maxY", OleDbType.VarChar));
-                    cmd.Parameters[3].Value = maxY;
+                    if (useParameter)
+                    {
+                        cmd.Parameters.Add(new OleDbParameter("@minX", OleDbType.VarChar));
+                        cmd.Parameters[0].Value = minX;
+                        cmd.Parameters.Add(new OleDbParameter("@minY", OleDbType.VarChar));
+                        cmd.Parameters[1].Value = minY;
+                        cmd.Parameters.Add(new OleDbParameter("@maxX", OleDbType.VarChar));
+                        cmd.Parameters[2].Value = maxX;
+                        cmd.Parameters.Add(new OleDbParameter("@maxY", OleDbType.VarChar));
+                        cmd.Parameters[3].Value = maxY;
+                    }
                     OleDbDataReader reader = cmd.ExecuteReader();
 
                     while (reader.Read())
@@ -62,7 +73,7 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
                         //编号
                         if (!reader.IsDBNull(0))
                         {
-                            info.Bh = reader[0].ToString();
+                            info.Key_zd = reader[0].ToString();
                         }
                         //场所名称
                         if (!reader.IsDBNull(1))
@@ -80,26 +91,26 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
                             info.Xqpcs = reader[3].ToString();
                         }
                         //建院情况
-                        if (!reader.IsDBNull(4))
-                        {
-                            info.Jyqk = reader[4].ToString();
-                        }
+                        //if (!reader.IsDBNull(4))
+                        //{
+                        //    info.Jyqk = reader[4].ToString();
+                        //}
                         //场所照片ID
-                        if (!reader.IsDBNull(5))
-                        {
-                            info.Cszpid = reader[5].ToString();
-                        }
+                        //if (!reader.IsDBNull(5))
+                        //{
+                        //    info.Cszpid = reader[5].ToString();
+                        //}
                         //宗教场所经度 纬度
-                        if (!reader.IsDBNull(6) && !reader.IsDBNull(7))
+                        if (!reader.IsDBNull(4) && !reader.IsDBNull(5))
                         {
                             double x, y;
-                            Double.TryParse(reader[6].ToString(), out x);
+                            Double.TryParse(reader[4].ToString(), out x);
                             if (x > 0)
                             {
                                 info.ZjcsJd = x;
                             }
 
-                            Double.TryParse(reader[7].ToString(), out y);
+                            Double.TryParse(reader[5].ToString(), out y);
                             if (y > 0)
                             {
                                 info.ZjcsWd = y;
@@ -107,10 +118,10 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
                         }
 
                         //key_zd
-                        if(!reader.IsDBNull(8))
-                        {
-                            info.Key_zd = reader[8].ToString();
-                        }
+                        //if(!reader.IsDBNull(8))
+                        //{
+                        //    info.Key_zd = reader[8].ToString();
+                        //}
 
                         //选取屏幕坐标范围内宗教场所
                         if (info.ZjcsJd > 0 && info.ZjcsWd > 0 && info.ZjcsJd >= minX && info.ZjcsWd >= minY && info.ZjcsJd <= maxX && info.ZjcsWd <= maxY)

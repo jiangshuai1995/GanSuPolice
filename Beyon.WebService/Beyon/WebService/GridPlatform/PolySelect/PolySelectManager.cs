@@ -10,6 +10,7 @@
     using System.Windows;
     using System.IO;
     using Beyon.Domain.GridSearch;
+using System.Data.OleDb;
 
     /// <summary>
     /// 圈选管理类
@@ -20,7 +21,6 @@
         /// 配置文件
         /// </summary>
         private const string configFileName = "webservice.config";
-
         /// <summary>
         /// 圈选获取案件统计
         /// </summary>
@@ -32,7 +32,7 @@
             long num;
             long num2;
             long num3;
-            string url = ConfigHelper.GetValueByKey("webservice.config", "圈选案件统计") + "?geom=" + polygon;
+            string url = ConfigHelper.GetValueByKey("webservice.config", "圈选案件统计") + "?geom=" + polygon + "&pageNum=1&pageSize=1"; ;
             if (mapLevel.Equals("派出所") || mapLevel.Equals("责任区"))
             {
                 url = url + "&queryType=accurate";
@@ -129,10 +129,25 @@
         /// <returns></returns>
         public long GetCSCountByPoly(string csType, string polygon)
         {
-            long num;
-            string a = ServiceUtil.GetRemoteXmlStream((ConfigHelper.GetValueByKey("webservice.config", "圈选场所统计") + "?geom=" + polygon) + "&type=" + ConfigHelper.GetValueByKey("webservice.config", csType), null);
-            long.TryParse(JObject.Parse(ServiceUtil.GetRemoteXmlStream((ConfigHelper.GetValueByKey("webservice.config", "圈选场所统计") + "?geom=" + polygon) + "&type=" + ConfigHelper.GetValueByKey("webservice.config", csType), null))["count"].ToString(), out num);
-            return num;
+            ServiceUtil.GetRemoteXmlStream(string.Concat(new string[]
+	        {
+		        ConfigHelper.GetValueByKey("webservice.config", "圈选场所统计"),
+		        "?geom=",
+		        polygon,
+		        "&pageNum=1&pageSize=1&type=",
+		        ConfigHelper.GetValueByKey("webservice.config", csType)
+	        }), null);
+
+             long result;
+             long.TryParse(JObject.Parse(ServiceUtil.GetRemoteXmlStream(string.Concat(new string[]
+	        {
+		        ConfigHelper.GetValueByKey("webservice.config", "圈选场所统计"),
+		        "?geom=",
+		        polygon,
+		        "&type=",
+		        ConfigHelper.GetValueByKey("webservice.config", csType)
+	        }), null))["count"].ToString(), out result);
+            return result;
         }
 
         /// <summary>
@@ -231,30 +246,55 @@
         /// <returns></returns>
         public List<PolyJS> GetJSListByPoly(string jsType, List<Point> polygon)
         {
-            string url = ConfigHelper.GetValueByKey("webservice.config", "监所") + ConfigHelper.GetValueByKey("webservice.config", jsType);
-            List<PolyJS> jslist = JsonConvert.DeserializeObject<List<PolyJS>>((ServiceUtil.GetRemoteXmlStream(url, null)));
-            List<PolyJS> jsli = new List<PolyJS>();
-            Point p = new Point();
-            double jd;
-            double wd;
-            //foreach (PolyJS js in jslist)
-            //{
-            //    if (js.GAJGJD != null && js.GAJGWD != null)
-            //    {
-            //        double.TryParse(js.GAJGJD, out jd);
-            //        double.TryParse(js.GAJGWD, out wd);
-            //        p.X = jd;
-            //        p.Y = wd;
-            //        bool re = PtInPolygon(jd,wd, polygon);
-            //        if (re == true)
-            //        {
-            //            jsli.Add(js);
-            //        }
-            //    }
-            //}
-            //return jsli;
+            //string url = ConfigHelper.GetValueByKey("webservice.config", "监所") + ConfigHelper.GetValueByKey("webservice.config", jsType);
+            //List<PolyJS> jslist = JsonConvert.DeserializeObject<List<PolyJS>>((ServiceUtil.GetRemoteXmlStream(url, null)));
+            //List<PolyJS> jsli = new List<PolyJS>();
+            //Point p = new Point();
+            //double jd;
+            //double wd;
+            ////foreach (PolyJS js in jslist)
+            ////{
+            ////    if (js.GAJGJD != null && js.GAJGWD != null)
+            ////    {
+            ////        double.TryParse(js.GAJGJD, out jd);
+            ////        double.TryParse(js.GAJGWD, out wd);
+            ////        p.X = jd;
+            ////        p.Y = wd;
+            ////        bool re = PtInPolygon(jd,wd, polygon);
+            ////        if (re == true)
+            ////        {
+            ////            jsli.Add(js);
+            ////        }
+            ////    }
+            ////}
+            ////return jsli;
 
-            return jslist;
+            //return jslist;
+
+            string url = ConfigHelper.GetValueByKey("webservice.config", "监所") + ConfigHelper.GetValueByKey("webservice.config", jsType);
+            List<PolyJS> list = JsonConvert.DeserializeObject<List<PolyJS>>(ServiceUtil.GetRemoteXmlStream(url, null));
+            List<PolyJS> list2 = new List<PolyJS>();
+            Point point = default(Point);
+            foreach (PolyJS current in list)
+            {
+                if (current.GAJGJD != null && current.GAJGWD != null)
+                {
+                    double num;
+                    if (!double.TryParse(current.GAJGJD, out num))
+                        continue;
+                    double num2;
+                    if (!double.TryParse(current.GAJGWD, out num2))
+                        continue;
+                    point.X = num;
+                    point.Y = num2;
+                    bool flag = this.PtInPolygon(num, num2, polygon);
+                    if (flag)
+                    {
+                        list2.Add(current);
+                    }
+                }
+            }
+            return list2;
         }
 
         /// <summary>
@@ -264,8 +304,73 @@
         /// <returns></returns>
         public List<PolyJS> GetJSListByProvince(string jsType)
         {
-            string url = ConfigHelper.GetValueByKey("webservice.config", "监所") + ConfigHelper.GetValueByKey("webservice.config", jsType);
-            return JsonConvert.DeserializeObject<List<PolyJS>>((ServiceUtil.GetRemoteXmlStream(url, null)));
+            OleDbConnectionStringBuilder zzjgDBConnectBuilder = new OleDbConnectionStringBuilder();
+
+             zzjgDBConnectBuilder.Add("Provider", "MSDAORA");
+             zzjgDBConnectBuilder.Add("Data Source", ConfigHelper.GetValueByKey("webservice.config", "zzjgDB"));
+             zzjgDBConnectBuilder.Add("Persist Security Info", true);
+             zzjgDBConnectBuilder.Add("User ID", ConfigHelper.GetValueByKey("webservice.config", "zzjgDBUser"));
+             zzjgDBConnectBuilder.Add("Password", ConfigHelper.GetValueByKey("webservice.config", "zzjgDBPasswd"));
+
+            string type ="0";
+            if(jsType=="看守所")
+            {
+                type="1";
+            }
+            else if(jsType=="拘留所")
+            {
+                type="2";
+            }
+            else if(jsType=="戒毒所")
+            {
+                type="3";
+            }
+
+             List<PolyJS> result = new List<PolyJS>();
+
+             try
+             {
+                 using (OleDbConnection conn = new OleDbConnection(zzjgDBConnectBuilder.ConnectionString))
+                 { 
+                        String sql =String.Format( "select JSBH,JSMC,DZ,GAJGJD,GAJGWD from B_ZTK_SP_JSJBXX where substr(JSBH,7,1)='{0}'",type);
+                        conn.Open();
+                        OleDbCommand cmd = new OleDbCommand(sql, conn);
+                        OleDbDataReader reader = cmd.ExecuteReader();
+                        while (reader.Read()) 
+                        {
+                            PolyJS info = new PolyJS();
+                            if (!reader.IsDBNull(0))
+                            {
+                                info.JS_CODE = reader[0].ToString();
+                            }
+
+                            if (!reader.IsDBNull(1))
+                            {
+                                info.JS_MC = reader[1].ToString();
+                            }
+                            if (!reader.IsDBNull(2)) 
+                            { 
+                                
+                            }
+                            if (!reader.IsDBNull(3) && !reader.IsDBNull(4)) 
+                            {
+                                info.GAJGJD = reader[3].ToString();
+                                info.GAJGWD = reader[4].ToString();
+                                result.Add(info);
+                            }
+                        }
+                 }
+             }
+             catch (Exception ex) 
+             {
+                 throw ex;
+             }
+
+             return result;
+
+
+            //string url = ConfigHelper.GetValueByKey("webservice.config", "监所") + ConfigHelper.GetValueByKey("webservice.config", jsType);
+            //return JsonConvert.DeserializeObject<List<PolyJS>>((ServiceUtil.GetRemoteXmlStream(url, null)));
         }
 
         public List<RenKou> GetCZRenKouListByPoly(string mapLevel, string polygon)
@@ -298,7 +403,7 @@
 
         public long GetFWCountByPoly(string mapLevel, string polygon)
         {
-            string url = ConfigHelper.GetValueByKey("webservice.config", "圈选房屋统计") + "?geom=" + polygon;
+            string url = ConfigHelper.GetValueByKey("webservice.config", "圈选房屋统计") + "?geom=" + polygon + "&pageNum=1&pageSize=1";
             if (mapLevel.Equals("派出所") || mapLevel.Equals("责任区"))
             {
                 url = url + "&queryType=accurate";
@@ -366,7 +471,7 @@
         {
             long num;
             long num2;
-            string url = ConfigHelper.GetValueByKey("webservice.config", "圈选派出所责任区统计") + "?geom=" + polygon;
+            string url = ConfigHelper.GetValueByKey("webservice.config", "圈选派出所责任区统计") + "?geom=" + polygon + "&pageNum=1&pageSize=1";
             if (mapLevel.Equals("派出所") || mapLevel.Equals("责任区"))
             {
                 url = url + "&queryType=accurate";
@@ -435,7 +540,7 @@
         public long GetPoliceManCountByPoly(string mapLevel, string polygon)
         {
             long num;
-            string url = ConfigHelper.GetValueByKey("webservice.config", "圈选警员统计") + "?geom=" + polygon;
+            string url = ConfigHelper.GetValueByKey("webservice.config", "圈选警员统计") + "?geom=" + polygon + "&pageNum=1&pageSize=1";
             if (mapLevel.Equals("派出所") || mapLevel.Equals("责任区"))
             {
                 url = url + "&queryType=accurate";
@@ -551,7 +656,7 @@
         {
             long num1;
             long num2;
-            string url = ConfigHelper.GetValueByKey("webservice.config", "圈选人口统计") + "?geom=" + polygon;
+            string url = ConfigHelper.GetValueByKey("webservice.config", "圈选人口统计") + "?geom=" + polygon + "&pageNum=1&pageSize=1"; 
             if (mapLevel.Equals("派出所") || mapLevel.Equals("责任区"))
             {
                 url = url + "&queryType=accurate";
@@ -685,7 +790,7 @@
             long num6;
             long num7;
             long num8;
-            JObject obj2 = JObject.Parse(ServiceUtil.GetRemoteXmlStream(ConfigHelper.GetValueByKey("webservice.config", "圈选视频监控统计") + "?geom=" + polygon, null));
+            JObject obj2 = JObject.Parse(ServiceUtil.GetRemoteXmlStream(ConfigHelper.GetValueByKey("webservice.config", "圈选视频监控统计") + "?geom=" + polygon + "&pageNum=1&pageSize=1", null));
             long.TryParse(obj2["bazx"].ToString(), out num);
             long.TryParse(obj2["ckdw"].ToString(), out num2);
             long.TryParse(obj2["zdcs"].ToString(), out num3);
@@ -844,8 +949,59 @@
         /// <returns></returns>
         public JSDetail GetJSDetailByPoly(string id)
         {
-            string json = ServiceUtil.GetRemoteXmlStream(ConfigHelper.GetValueByKey("webservice.config", "圈选监所详细信息") + id, null);
-            return JsonConvert.DeserializeObject<List<JSDetail>>(json)[0];
+
+            OleDbConnectionStringBuilder zzjgDBConnectBuilder = new OleDbConnectionStringBuilder();
+
+            zzjgDBConnectBuilder.Add("Provider", "MSDAORA");
+            zzjgDBConnectBuilder.Add("Data Source", ConfigHelper.GetValueByKey("webservice.config", "zzjgDB"));
+            zzjgDBConnectBuilder.Add("Persist Security Info", true);
+            zzjgDBConnectBuilder.Add("User ID", ConfigHelper.GetValueByKey("webservice.config", "zzjgDBUser"));
+            zzjgDBConnectBuilder.Add("Password", ConfigHelper.GetValueByKey("webservice.config", "zzjgDBPasswd"));
+
+            JSDetail info = new JSDetail();
+            try
+            {
+                using (OleDbConnection conn = new OleDbConnection(zzjgDBConnectBuilder.ConnectionString))
+                {
+                    //缺少照片数据
+                    String sql = String.Format("select JSMC,LD,DH,DZ,BZRS from B_ZTK_SP_JSJBXX where JSBH='{0}'", id);
+                    conn.Open();
+                    OleDbCommand cmd = new OleDbCommand(sql, conn);
+                    OleDbDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        if (!reader.IsDBNull(0))
+                        {
+                            info.JS_MC = reader[0].ToString();
+                        }
+                        if (!reader.IsDBNull(1))
+                        {
+                            info.DWLD_XM = reader[1].ToString();
+                        }
+                        if (!reader.IsDBNull(2))
+                        {
+                            info.DWLD_LXDH = reader[2].ToString();
+                        }
+                        if (!reader.IsDBNull(3))
+                        {
+                            info.GAJGXZ = reader[3].ToString();
+                        }
+                        if (!reader.IsDBNull(4))
+                        {
+                            info.RS = reader[4].ToString();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) 
+            {
+                throw ex;
+            }
+
+            return info;
+
+            //string json = ServiceUtil.GetRemoteXmlStream(ConfigHelper.GetValueByKey("webservice.config", "圈选监所详细信息") + id, null);
+            //return JsonConvert.DeserializeObject<List<JSDetail>>(json)[0];
         }
 
         /// <summary>

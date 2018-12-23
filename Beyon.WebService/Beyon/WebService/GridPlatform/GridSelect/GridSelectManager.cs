@@ -5,6 +5,8 @@
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
+    using System.Data.OleDb;
+    using System.Globalization;
     using System.Linq;
 
     public class GridSelectManager
@@ -172,15 +174,136 @@
             return JsonConvert.DeserializeObject<List<JieChuJing>>(ServiceUtil.GetRemoteXmlStream(ConfigHelper.GetValueByKey("webservice.config", "网格接处警案件列表") + "?id=" + gridId, null));
         }
 
-        public LvKe GetLvKeDetail(string lksfzh)
+        public LvKe GetLvKeDetail(string lksfzh,string dateTime=null)
         {
+
+            //OleDbConnectionStringBuilder zzjgDBConnectBuilder = new OleDbConnectionStringBuilder();
+
+            //zzjgDBConnectBuilder.Add("Provider", "MSDAORA");
+            //zzjgDBConnectBuilder.Add("Data Source", ConfigHelper.GetValueByKey("webservice.config", "zzjgDB"));
+            //zzjgDBConnectBuilder.Add("Persist Security Info", true);
+            //zzjgDBConnectBuilder.Add("User ID", ConfigHelper.GetValueByKey("webservice.config", "zzjgDBUser"));
+            //zzjgDBConnectBuilder.Add("Password", ConfigHelper.GetValueByKey("webservice.config", "zzjgDBPasswd"));
+
+            //DateTimeFormatInfo format = new System.Globalization.DateTimeFormatInfo();
+            //format.ShortDatePattern = "yyyyMMddhhmm";
+
+            //LvKe info = new LvKe();
+
+            //try
+            //{
+            //    using (OleDbConnection conn = new OleDbConnection(zzjgDBConnectBuilder.ConnectionString))
+            //    {
+            //        String sql = String.Format("select XM,ZJHM,RZFH,RZSJ from B_ZTK_SP_LKZSXX where ZJHM='{0}' AND ROWNUM=1", lksfzh);
+            //        conn.Open();
+            //        OleDbCommand cmd = new OleDbCommand(sql, conn);
+            //        OleDbDataReader reader = cmd.ExecuteReader();
+            //        while (reader.Read())
+            //        {
+                        
+            //            if (!reader.IsDBNull(0))
+            //            {
+            //                info.LKXM = reader[0].ToString();
+            //            }
+            //            if (!reader.IsDBNull(1))
+            //            {
+            //                info.LKSFZH = reader[1].ToString();
+            //            }
+            //            if (!reader.IsDBNull(2))
+            //            {
+            //                info.FJH = reader[2].ToString();
+            //            }
+            //            if (!reader.IsDBNull(3))
+            //            {
+            //                info.RZSJ = DateTime.Parse(reader[3].ToString(), format);
+            //            }
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw ex;
+            //}
+
+            //return info;
+
             List<LvKe> list = JsonConvert.DeserializeObject<List<LvKe>>(ServiceUtil.GetRemoteXmlStream(ConfigHelper.GetValueByKey("webservice.config", "旅馆旅客详细信息") + "?id=" + lksfzh, null));
+            if (!String.IsNullOrEmpty(dateTime))
+            {
+                foreach (var lvke in list)
+                {
+                    if (String.Equals(lvke.RZSJ.ToString(), dateTime))
+                    {
+                        return lvke;
+                    }
+                }
+            }
+
             return ((list.Count >= 1) ? list[0] : new LvKe());
         }
 
         public List<LvKe> GetLvKeList(string ldId)
         {
-            return JsonConvert.DeserializeObject<List<LvKe>>(ServiceUtil.GetRemoteXmlStream(ConfigHelper.GetValueByKey("webservice.config", "旅馆旅客列表") + "?id=" + ldId, null));
+            
+            //List<LvKe> list = new List<LvKe>();
+            //OleDbConnectionStringBuilder zzjgDBConnectBuilder = new OleDbConnectionStringBuilder();
+
+            //zzjgDBConnectBuilder.Add("Provider", "MSDAORA");
+            //zzjgDBConnectBuilder.Add("Data Source", ConfigHelper.GetValueByKey("webservice.config", "zzjgDB"));
+            //zzjgDBConnectBuilder.Add("Persist Security Info", true);
+            //zzjgDBConnectBuilder.Add("User ID", ConfigHelper.GetValueByKey("webservice.config", "zzjgDBUser"));
+            //zzjgDBConnectBuilder.Add("Password", ConfigHelper.GetValueByKey("webservice.config", "zzjgDBPasswd"));
+
+            //DateTimeFormatInfo format = new System.Globalization.DateTimeFormatInfo();
+            //format.ShortDatePattern = "yyyyMMddhhmm";
+
+            //try
+            //{
+            //    using (OleDbConnection conn = new OleDbConnection(zzjgDBConnectBuilder.ConnectionString))
+            //    {
+            //        String sql = String.Format("select XM,ZJHM,RZFH,RZSJ from B_ZTK_SP_LKZSXX where LGBM='{0}'", ldId);
+            //        conn.Open();
+            //        OleDbCommand cmd = new OleDbCommand(sql, conn);
+            //        OleDbDataReader reader = cmd.ExecuteReader();
+            //        while (reader.Read())
+            //        {
+            //            LvKe info = new LvKe();
+            //            if (!reader.IsDBNull(0))
+            //            {
+            //                info.LKXM = reader[0].ToString();
+            //            }
+            //            if (!reader.IsDBNull(1))
+            //            {
+            //                info.LKSFZH = reader[1].ToString();
+            //            }
+            //            if (!reader.IsDBNull(2))
+            //            {
+            //                info.FJH = reader[2].ToString();
+            //            }
+            //            if (!reader.IsDBNull(3))
+            //            {
+            //                info.RZSJ = DateTime.Parse(reader[3].ToString(),format);
+            //            }
+            //            list.Add(info);
+            //        }
+            //    }
+            //}
+            //catch (Exception ex) 
+            //{
+            //    throw ex;
+            //}
+
+
+
+
+            var list = JsonConvert.DeserializeObject<List<LvKe>>(ServiceUtil.GetRemoteXmlStream(ConfigHelper.GetValueByKey("webservice.config", "旅馆旅客列表") + "?id=" + ldId, null));
+            if (list != null && list.Count > 0)
+            {
+                list = list.OrderByDescending(t => t.RZSJ).ToList<LvKe>();
+            }
+
+            //list = list.OrderByDescending(t => t.RZSJ).ToList<LvKe>();
+            return list;
         }
 
         public List<PoliceCar> GetPoliceCarList(string gridId)
@@ -213,15 +336,30 @@
             return JsonConvert.DeserializeObject<RenKou>(ServiceUtil.GetRemoteXmlStream(ConfigHelper.GetValueByKey("webservice.config", "人员详细信息") + "?id=" + sfzh, null));
         }
 
-        public SWRY GetSWRYDetail(string zjhm)
+        public SWRY GetSWRYDetail(string zjhm, string time = null)
         {
             List<SWRY> list = JsonConvert.DeserializeObject<List<SWRY>>(ServiceUtil.GetRemoteXmlStream(ConfigHelper.GetValueByKey("webservice.config", "网吧上网人员详细信息") + "?id=" + zjhm, null));
+            if (!string.IsNullOrEmpty(time))
+            {
+                foreach (var swry in list)
+                {
+                    if (string.Equals(swry.SJSJ.ToString(), time))
+                    {
+                        return swry;
+                    }
+                }
+            }
             return ((list.Count >= 1) ? list[0] : new SWRY());
         }
 
         public List<SWRY> GetSWRYList(string wbId)
         {
-            return JsonConvert.DeserializeObject<List<SWRY>>(ServiceUtil.GetRemoteXmlStream(ConfigHelper.GetValueByKey("webservice.config", "网吧上网人员列表") + "?id=" + wbId, null));
+            var list = JsonConvert.DeserializeObject<List<SWRY>>(ServiceUtil.GetRemoteXmlStream(ConfigHelper.GetValueByKey("webservice.config", "网吧上网人员列表") + "?id=" + wbId, null));
+            if (list != null && list.Count > 0)
+            {
+                list = list.OrderByDescending(t => t.SJSJ).ToList<SWRY>();
+            }
+            return list;
         }
 
         public Dictionary<string, long> GetVideoCount(string gridId)

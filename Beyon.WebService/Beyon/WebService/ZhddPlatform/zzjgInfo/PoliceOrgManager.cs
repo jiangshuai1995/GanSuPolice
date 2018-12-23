@@ -42,7 +42,7 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
             {
                 using (OleDbConnection conn = new OleDbConnection(this.zzjgDBConnectBuilder.ConnectionString))
                 {
-                    String sql = "select GAJGDM, GAJGMC, GAJGJC, GAJGJD, GAJGWD, JGLX from ZZJGXT.GAJG_BASEINFO t where zt = '01'";
+                    String sql = "select t.DW_CODE, t.MC, a.DZMC,a.DZJDZB,a.DZWDZB,t.LX from B_ZTK_SP_BZDZ_DX a, B_ZTK_SP_PCS t where t.LX in (10,20,30,40) AND a.DZBM=t.DZ " ;
                     conn.Open();
                     OleDbCommand cmd = new OleDbCommand(sql, conn);
                     OleDbDataReader reader = cmd.ExecuteReader();
@@ -55,17 +55,14 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
                         {
                             info.Gajgdm = reader[0].ToString();
                         }
-                        //orgid
                         if (!reader.IsDBNull(1))
                         {
                             info.Gajgmc = reader[1].ToString();
                         }
-                        //carno
-                        if (!reader.IsDBNull(2))
-                        {
-                            info.Gajgjc = reader[2].ToString();
-                        }
-                        //sssjmc
+                        //if (!reader.IsDBNull(2))
+                        //{
+                        //    info.Gajgjc = reader[2].ToString();
+                        //}
                         if (!reader.IsDBNull(3) && !reader.IsDBNull(4))
                         {
                             double x, y;
@@ -111,7 +108,7 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
             {
                 using (OleDbConnection conn = new OleDbConnection(this.zzjgDBConnectBuilder.ConnectionString))
                 {
-                    String sql = "select GAJGDM, GAJGMC, GAJGJC, GAJGJD, GAJGWD, JGLX from ZZJGXT.GAJG_BASEINFO t where zt = '01' and jglx = 'PCS'";
+                    String sql = "select t.DW_CODE, t.MC, a.DZMC,a.DZJDZB,a.DZWDZB,t.LX from B_ZTK_SP_BZDZ_DX a, B_ZTK_SP_PCS t where t.LX =40  AND a.DZBM=t.DZ";
                     conn.Open();
                     OleDbCommand cmd = new OleDbCommand(sql, conn);
                     OleDbDataReader reader = cmd.ExecuteReader();
@@ -119,21 +116,18 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
                     while (reader.Read())
                     {
                         PoliceOrg info = new PoliceOrg();
-                        //GPSID
                         if (!reader.IsDBNull(0))
                         {
                             info.Gajgdm = reader[0].ToString();
                         }
-                        //orgid
                         if (!reader.IsDBNull(1))
                         {
                             info.Gajgmc = reader[1].ToString();
                         }
-                        //carno
-                        if (!reader.IsDBNull(2))
-                        {
-                            info.Gajgjc = reader[2].ToString();
-                        }
+                        //if (!reader.IsDBNull(2))
+                        //{
+                        //    info.Gajgjc = reader[2].ToString();
+                        //}
                         //sssjmc
                         if (!reader.IsDBNull(3) && !reader.IsDBNull(4))
                         {
@@ -180,7 +174,7 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
             {
                 using (OleDbConnection conn = new OleDbConnection(this.zzjgDBConnectBuilder.ConnectionString))
                 {
-                    String sql = "select GAJGDM, GAJGMC, GAJGJC, GAJGJD, GAJGWD, JGLX from ZZJGXT.GAJG_BASEINFO t where zt = '01' and jglx != 'PCS'";
+                    String sql = "select t.DW_CODE, t.MC, a.DZMC,a.DZJDZB,a.DZWDZB,t.LX from B_ZTK_SP_BZDZ_DX a, B_ZTK_SP_PCS t where t.LX in (10,20,30) AND a.DZBM=t.DZ";
                     conn.Open();
                     OleDbCommand cmd = new OleDbCommand(sql, conn);
                     OleDbDataReader reader = cmd.ExecuteReader();
@@ -193,16 +187,16 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
                         {
                             info.Gajgdm = reader[0].ToString();
                         }
-                        //orgid
+
                         if (!reader.IsDBNull(1))
                         {
                             info.Gajgmc = reader[1].ToString();
                         }
-                        //carno
-                        if (!reader.IsDBNull(2))
-                        {
-                            info.Gajgjc = reader[2].ToString();
-                        }
+
+                        //if (!reader.IsDBNull(2))
+                        //{
+                        //    info.Gajgjc = reader[2].ToString();
+                        //}
                         //sssjmc
                         if (!reader.IsDBNull(3) && !reader.IsDBNull(4))
                         {
@@ -251,17 +245,27 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
             {
                 using (OleDbConnection conn = new OleDbConnection(this.zzjgDBConnectBuilder.ConnectionString))
                 {
-                    String sql = "select GAJGDM, GAJGMC, GAJGJC, GAJGJD, GAJGWD, JGLX from ZZJGXT.GAJG_BASEINFO t where zt = '01' and GAJGJD is not null and GAJGWD is not null and GAJGJD >= ? and GAJGWD >= ? and GAJGJD <= ? and GAJGWD <= ?";
-                    conn.Open();
-                    OleDbCommand cmd = new OleDbCommand(sql, conn);
-                    cmd.Parameters.Add(new OleDbParameter("@minX", OleDbType.Double));
-                    cmd.Parameters[0].Value = minX;
-                    cmd.Parameters.Add(new OleDbParameter("@minY", OleDbType.Double));
-                    cmd.Parameters[1].Value = minY;
-                    cmd.Parameters.Add(new OleDbParameter("@maxX", OleDbType.Double));
-                    cmd.Parameters[2].Value = maxX;
-                    cmd.Parameters.Add(new OleDbParameter("@maxY", OleDbType.Double));
-                    cmd.Parameters[3].Value = maxY;
+                    String sql = "select t.DW_CODE, t.MC, a.DZMC,a.DZJDZB,a.DZWDZB,t.LX from B_ZTK_SP_BZDZ_DX a, B_ZTK_SP_PCS t where t.LX in (10,20,30,40) AND a.DZBM=t.DZ ";
+                    bool usepara = false;
+                    if (minX >= 100 || maxX < 100)
+                    {
+                        usepara = true;
+                         sql = "select t.DW_CODE, t.MC, a.DZMC,a.DZJDZB,a.DZWDZB,t.LX from B_ZTK_SP_BZDZ_DX a, B_ZTK_SP_PCS t where t.LX in (10,20,30,40) AND a.DZBM=t.DZ  and a.DZJDZB >= ? and a.DZWDZB >= ? and a.DZJDZB <= ? and a.DZWDZB <= ?";
+                    }
+                        conn.Open();
+                        OleDbCommand cmd = new OleDbCommand(sql, conn);
+                        if (usepara)
+                        {
+                            cmd.Parameters.Add(new OleDbParameter("@minX", OleDbType.Double));
+                            cmd.Parameters[0].Value = minX;
+                            cmd.Parameters.Add(new OleDbParameter("@minY", OleDbType.Double));
+                            cmd.Parameters[1].Value = minY;
+                            cmd.Parameters.Add(new OleDbParameter("@maxX", OleDbType.Double));
+                            cmd.Parameters[2].Value = maxX;
+                            cmd.Parameters.Add(new OleDbParameter("@maxY", OleDbType.Double));
+                            cmd.Parameters[3].Value = maxY;
+                        }
+                    
                     OleDbDataReader reader = cmd.ExecuteReader();
 
                     while (reader.Read())
@@ -272,16 +276,14 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
                         {
                             info.Gajgdm = reader[0].ToString();
                         }
-                        //orgid
                         if (!reader.IsDBNull(1))
                         {
                             info.Gajgmc = reader[1].ToString();
                         }
-                        //carno
-                        if (!reader.IsDBNull(2))
-                        {
-                            info.Gajgjc = reader[2].ToString();
-                        }
+                        //if (!reader.IsDBNull(2))
+                        //{
+                        //    info.Gajgjc = reader[2].ToString();
+                        //}
                         //sssjmc
                         if (!reader.IsDBNull(3) && !reader.IsDBNull(4))
                         {
@@ -335,17 +337,26 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
             {
                 using (OleDbConnection conn = new OleDbConnection(this.zzjgDBConnectBuilder.ConnectionString))
                 {
-                    String sql = "select GAJGDM, GAJGMC, GAJGJC, GAJGJD, GAJGWD, JGLX from ZZJGXT.GAJG_BASEINFO t where zt = '01' and jglx = 'PCS' and GAJGJD is not null and GAJGWD is not null and GAJGJD >= ? and GAJGWD >= ? and GAJGJD <= ? and GAJGWD <= ?";
+                    bool usepara = false;
+                    String sql = " select t.DW_CODE, t.MC, a.DZMC,a.DZJDZB,a.DZWDZB,t.LX from B_ZTK_SP_BZDZ_DX a, B_ZTK_SP_PCS t where t.LX=40 AND a.DZBM=t.DZ ";
+                    if (minX >= 100 || maxX < 100) 
+                    { 
+                        usepara= true;
+                        sql = "select t.DW_CODE, t.MC, a.DZMC,a.DZJDZB,a.DZWDZB,t.LX from B_ZTK_SP_BZDZ_DX a, B_ZTK_SP_PCS t where t.LX=40 AND a.DZBM=t.DZ  and a.DZJDZB >= ? and a.DZWDZB >= ? and a.DZJDZB <= ? and a.DZWDZB <= ?";
+                    }
                     conn.Open();
                     OleDbCommand cmd = new OleDbCommand(sql, conn);
-                    cmd.Parameters.Add(new OleDbParameter("@minX", OleDbType.Double));
-                    cmd.Parameters[0].Value = minX;
-                    cmd.Parameters.Add(new OleDbParameter("@minY", OleDbType.Double));
-                    cmd.Parameters[1].Value = minY;
-                    cmd.Parameters.Add(new OleDbParameter("@maxX", OleDbType.Double));
-                    cmd.Parameters[2].Value = maxX;
-                    cmd.Parameters.Add(new OleDbParameter("@maxY", OleDbType.Double));
-                    cmd.Parameters[3].Value = maxY;
+                    if (usepara)
+                    {
+                        cmd.Parameters.Add(new OleDbParameter("@minX", OleDbType.Double));
+                        cmd.Parameters[0].Value = minX;
+                        cmd.Parameters.Add(new OleDbParameter("@minY", OleDbType.Double));
+                        cmd.Parameters[1].Value = minY;
+                        cmd.Parameters.Add(new OleDbParameter("@maxX", OleDbType.Double));
+                        cmd.Parameters[2].Value = maxX;
+                        cmd.Parameters.Add(new OleDbParameter("@maxY", OleDbType.Double));
+                        cmd.Parameters[3].Value = maxY;
+                    }
                     OleDbDataReader reader = cmd.ExecuteReader();
 
                     while (reader.Read())
@@ -356,16 +367,16 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
                         {
                             info.Gajgdm = reader[0].ToString();
                         }
-                        //orgid
+
                         if (!reader.IsDBNull(1))
                         {
                             info.Gajgmc = reader[1].ToString();
                         }
-                        //carno
-                        if (!reader.IsDBNull(2))
-                        {
-                            info.Gajgjc = reader[2].ToString();
-                        }
+
+                        //if (!reader.IsDBNull(2))
+                        //{
+                        //    info.Gajgjc = reader[2].ToString();
+                        //}
                         //sssjmc
                         if (!reader.IsDBNull(3) && !reader.IsDBNull(4))
                         {
@@ -405,7 +416,7 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
         }
 
         /// <summary>
-        /// 根据屏幕坐标范围获取派出所机构
+        /// 根据屏幕坐标范围获取非派出所机构
         /// </summary>
         /// <param name="minX"></param>
         /// <param name="minY"></param>
@@ -419,17 +430,26 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
             {
                 using (OleDbConnection conn = new OleDbConnection(this.zzjgDBConnectBuilder.ConnectionString))
                 {
-                    String sql = "select GAJGDM, GAJGMC, GAJGJC, GAJGJD, GAJGWD, JGLX from ZZJGXT.GAJG_BASEINFO t where zt = '01' and jglx != 'PCS' and GAJGJD is not null and GAJGWD is not null and GAJGJD >= ? and GAJGWD >= ? and GAJGJD <= ? and GAJGWD <= ?";
+                    bool usepara = false;
+                    String sql = "select t.DW_CODE, t.MC, a.DZMC,a.DZJDZB,a.DZWDZB,t.LX from B_ZTK_SP_BZDZ_DX a, B_ZTK_SP_PCS t where t.LX in(10,20,30) AND a.DZBM=t.DZ";
+                    if (minX >= 100 || maxX < 100) 
+                    {
+                        usepara = true;
+                        sql = "select t.DW_CODE, t.MC, a.DZMC,a.DZJDZB,a.DZWDZB,t.LX from B_ZTK_SP_BZDZ_DX a, B_ZTK_SP_PCS t where t.LX in(10,20,30) AND a.DZBM=t.DZ  and a.DZJDZB >= ? and a.DZWDZB >= ? and a.DZJDZB <= ? and a.DZWDZB <= ?";
+                    }
                     conn.Open();
                     OleDbCommand cmd = new OleDbCommand(sql, conn);
-                    cmd.Parameters.Add(new OleDbParameter("@minX", OleDbType.Double));
-                    cmd.Parameters[0].Value = minX;
-                    cmd.Parameters.Add(new OleDbParameter("@minY", OleDbType.Double));
-                    cmd.Parameters[1].Value = minY;
-                    cmd.Parameters.Add(new OleDbParameter("@maxX", OleDbType.Double));
-                    cmd.Parameters[2].Value = maxX;
-                    cmd.Parameters.Add(new OleDbParameter("@maxY", OleDbType.Double));
-                    cmd.Parameters[3].Value = maxY;
+                    if (usepara)
+                    {
+                        cmd.Parameters.Add(new OleDbParameter("@minX", OleDbType.Double));
+                        cmd.Parameters[0].Value = minX;
+                        cmd.Parameters.Add(new OleDbParameter("@minY", OleDbType.Double));
+                        cmd.Parameters[1].Value = minY;
+                        cmd.Parameters.Add(new OleDbParameter("@maxX", OleDbType.Double));
+                        cmd.Parameters[2].Value = maxX;
+                        cmd.Parameters.Add(new OleDbParameter("@maxY", OleDbType.Double));
+                        cmd.Parameters[3].Value = maxY;
+                    }
                     OleDbDataReader reader = cmd.ExecuteReader();
 
                     while (reader.Read())
@@ -440,16 +460,16 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
                         {
                             info.Gajgdm = reader[0].ToString();
                         }
-                        //orgid
+
                         if (!reader.IsDBNull(1))
                         {
                             info.Gajgmc = reader[1].ToString();
                         }
-                        //carno
-                        if (!reader.IsDBNull(2))
-                        {
-                            info.Gajgjc = reader[2].ToString();
-                        }
+
+                        //if (!reader.IsDBNull(2))
+                        //{
+                        //    info.Gajgjc = reader[2].ToString();
+                        //}
                         //sssjmc
                         if (!reader.IsDBNull(3) && !reader.IsDBNull(4))
                         {
@@ -496,7 +516,7 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
                 using (OleDbConnection conn = new OleDbConnection(this.zzjgDBConnectBuilder.ConnectionString))
                 {
                     //String sql = "select GAJGDM, GAJGMC, GAJGJC, GAJGJD, GAJGWD, JGLX from ZZJGXT.GAJG_BASEINFO t where GAJGMC like '%" + exp + "%' or GAJGDM like '%" + exp + "%'";
-                    String sql = "select GAJGDM, GAJGMC, GAJGJC, GAJGJD, GAJGWD, JGLX from ZZJGXT.GAJG_BASEINFO t where GAJGMC like '%'||?||'%' or GAJGDM like '%'||?||'%'";
+                    String sql = "select t.DW_CODE, t.MC, a.DZMC,a.DZJDZB,a.DZWDZB,t.LX from B_ZTK_SP_BZDZ_DX a, B_ZTK_SP_PCS t where t.LX in (10,20,30,40) AND a.DZBM=t.DZ AND (t.MC like '%'||?||'%' or t.DW_CODE like '%'||?||'%')";
                     conn.Open();
                     OleDbCommand cmd = new OleDbCommand(sql, conn);
                     cmd.Parameters.Add(new OleDbParameter("@exp1", OleDbType.VarChar));
@@ -513,16 +533,16 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
                         {
                             info.Gajgdm = reader[0].ToString();
                         }
-                        //orgid
+
                         if (!reader.IsDBNull(1))
                         {
                             info.Gajgmc = reader[1].ToString();
                         }
-                        //carno
-                        if (!reader.IsDBNull(2))
-                        {
-                            info.Gajgjc = reader[2].ToString();
-                        }
+
+                        //if (!reader.IsDBNull(2))
+                        //{
+                        //    info.Gajgjc = reader[2].ToString();
+                        //}
                         //sssjmc
                         if (!reader.IsDBNull(3))
                         {

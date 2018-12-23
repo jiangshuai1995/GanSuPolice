@@ -43,7 +43,7 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
             {
                 using (OleDbConnection conn = new OleDbConnection(this.zzjgDBConnectBuilder.ConnectionString))
                 {
-                    String sql = "select LD_CODE, GAJG_KEY, LDMC, LDXZ, LDJD, LDWD, FZR_XM, FZR_SFZH, LXDH, LD_CODE_OLD from ZZJGXT.LD_INFO";
+                    String sql = "select LGBM, GXPCS_GAJGJGDM, DWMC, DZ, DLJD, DLWD, FZR_XM, LXDH from B_ZTK_SP_LGYYCS";
                     conn.Open();
                     OleDbCommand cmd = new OleDbCommand(sql, conn);
                     OleDbDataReader reader = cmd.ExecuteReader();
@@ -93,20 +93,20 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
                             info.Fzr_xm = reader[6].ToString();
                         }
 
-                        if(!reader.IsDBNull(7))
+                        //if(!reader.IsDBNull(7))
+                        //{
+                        //    info.Fzr_sfzh = reader[7].ToString();
+                        //}
+
+                        if (!reader.IsDBNull(7))
                         {
-                            info.Fzr_sfzh = reader[7].ToString();
+                            info.Lxdh = reader[7].ToString();
                         }
 
-                        if (!reader.IsDBNull(8))
-                        {
-                            info.Lxdh = reader[8].ToString();
-                        }
-
-                        if (!reader.IsDBNull(9))
-                        {
-                            info.Ld_code_old = reader[9].ToString();
-                        }
+                        //if (!reader.IsDBNull(9))
+                        //{
+                        //    info.Ld_code_old = reader[9].ToString();
+                        //}
 
                         if(info.LdJD > 0 && info.LdWD > 0)
                         {
@@ -136,7 +136,7 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
             {
                 using (OleDbConnection conn = new OleDbConnection(this.zzjgDBConnectBuilder.ConnectionString))
                 {
-                    String sql = "select LD_CODE, GAJG_KEY, LDMC, LDXZ, LDJD, LDWD, FZR_XM, FZR_SFZH, LXDH from ZZJGXT.LD_INFO where LDMC like '%'||?||'%'";
+                    String sql = "select LGBM, GXPCS_GAJGJGDM, DWMC, DZ, DLJD, DLWD, FZR_XM, LXDH from B_ZTK_SP_LGYYCS where DWMC like '%'||?||'%'";
                     conn.Open();
                     OleDbCommand cmd = new OleDbCommand(sql, conn);
                     cmd.Parameters.Add(new OleDbParameter("@exp1", OleDbType.VarChar));
@@ -188,14 +188,14 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
                             info.Fzr_xm = reader[6].ToString();
                         }
 
+                        //if (!reader.IsDBNull(7))
+                        //{
+                        //    info.Fzr_sfzh = reader[7].ToString();
+                        //}
+
                         if (!reader.IsDBNull(7))
                         {
-                            info.Fzr_sfzh = reader[7].ToString();
-                        }
-
-                        if (!reader.IsDBNull(8))
-                        {
-                            info.Lxdh = reader[8].ToString();
+                            info.Lxdh = reader[7].ToString();
                         }
 
                         if (info.LdJD > 0 && info.LdWD > 0)
@@ -320,7 +320,11 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
             {
                 using (OleDbConnection conn = new OleDbConnection(this.zzjgDBConnectBuilder.ConnectionString))
                 {
-                    String sql = "select LD_CODE, GAJG_KEY, LDMC, LDXZ, LDJD, LDWD, FZR_XM, FZR_SFZH, LXDH, LD_CODE_OLD from ZZJGXT.LD_INFO where LDJD IS NOT NULL and LDWD IS NOT NULL";
+                    String sql =String.Format( "select LGBM, GXPCS_GAJGJGDM, DWMC, DZ, DLJD, DLWD, FZR_XM, LXDH from B_ZTK_SP_LGYYCS where DLJD IS NOT NULL and DLWD IS NOT NULL  AND DLWD>='{0}' AND DLWD<='{1}' ",minY,maxY);
+                    if (minX >= 100 || maxX < 100)
+                    {
+                         sql =String.Format( "select LGBM, GXPCS_GAJGJGDM, DWMC, DZ, DLJD, DLWD, FZR_XM, LXDH from B_ZTK_SP_LGYYCS where DLJD IS NOT NULL and DLWD IS NOT NULL AND DLJD>='{0}' AND DLJD<='{1}' AND DLWD>='{2}' AND DLWD<='{3}' ",minX,maxX,minY,maxY);
+                    }
                     conn.Open();
                     OleDbCommand cmd = new OleDbCommand(sql, conn);
                     OleDbDataReader reader = cmd.ExecuteReader();
@@ -370,20 +374,20 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
                             info.Fzr_xm = reader[6].ToString();
                         }
 
+                        //if (!reader.IsDBNull(7))
+                        //{
+                        //    info.Fzr_sfzh = reader[7].ToString();
+                        //}
+
                         if (!reader.IsDBNull(7))
                         {
-                            info.Fzr_sfzh = reader[7].ToString();
+                            info.Lxdh = reader[7].ToString();
                         }
 
-                        if (!reader.IsDBNull(8))
-                        {
-                            info.Lxdh = reader[8].ToString();
-                        }
-
-                        if (!reader.IsDBNull(9))
-                        {
-                            info.Ld_code_old = reader[9].ToString();
-                        }
+                        //if (!reader.IsDBNull(9))
+                        //{
+                        //    info.Ld_code_old = reader[9].ToString();
+                        //}
 
                         if (info.LdJD > 0 && info.LdWD > 0 && info.LdJD >= minX && info.LdWD >= minY && info.LdJD <= maxX && info.LdWD <= maxY)
                         {
@@ -391,6 +395,29 @@ namespace Beyon.WebService.ZhddPlatform.zzjgInfo
                         }
 
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return result;
+        }
+
+        public int GetAllHotelCount()
+        {
+            int result = 0;
+            try
+            {
+                using (OleDbConnection conn = new OleDbConnection(this.zzjgDBConnectBuilder.ConnectionString))
+                {
+                    String sql = "select count(*) from  B_ZTK_SP_LGYYCS where DLJD IS NOT NULL and DLWD IS NOT NULL";
+                    conn.Open();
+                    OleDbCommand cmd = new OleDbCommand(sql, conn);
+                    var reader = cmd.ExecuteScalar();
+
+                    result = Int32.Parse(reader.ToString());
                 }
             }
             catch (Exception ex)

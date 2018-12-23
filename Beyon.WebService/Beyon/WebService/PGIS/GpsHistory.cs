@@ -63,11 +63,12 @@ namespace Beyon.WebService.PGIS
         {
             if(this.allGpsList == null)
             {
+                String sql = "select gpsid, orgid, carno, sssjmc, ssfjmc, ssdwmc, loctype from PGIS_DWXX.T_GPS_INFO_DZSP t";
+
                 try
                 {
                     using (OleDbConnection conn = new OleDbConnection(this.gpsDeviceDBConnectBuilder.ConnectionString))
                     {
-                        String sql = "select gpsid, orgid, carno, sssjmc, ssfjmc, ssdwmc, loctype from GSBUILDER.T_GPS_INFO t";
                         conn.Open();
                         OleDbCommand cmd = new OleDbCommand(sql, conn);
                         OleDbDataReader reader = cmd.ExecuteReader();
@@ -122,6 +123,7 @@ namespace Beyon.WebService.PGIS
                 }
                 catch (Exception ex)
                 {
+                    LogMgr.Instance.Error(String.Format("执行轨迹信息查询失败，SQL:{0}", sql), ex);
                     throw ex;
                 }
             }
@@ -138,7 +140,7 @@ namespace Beyon.WebService.PGIS
                 {
                     using (OleDbConnection conn = new OleDbConnection(this.gpsDeviceDBConnectBuilder.ConnectionString))
                     {
-                        String sql = "select gpsid, orgid, carno, sssjmc, ssfjmc, ssdwmc, loctype from GSBUILDER.T_GPS_INFO t where loctype = 1";
+                        String sql = "select gpsid, orgid, carno, sssjmc, ssfjmc, ssdwmc, loctype from PGIS_DWXX.T_GPS_INFO_DZSP t where loctype = 1";
                         conn.Open();
                         OleDbCommand cmd = new OleDbCommand(sql, conn);
                         OleDbDataReader reader = cmd.ExecuteReader();
@@ -209,7 +211,7 @@ namespace Beyon.WebService.PGIS
                 {
                     using (OleDbConnection conn = new OleDbConnection(this.gpsDeviceDBConnectBuilder.ConnectionString))
                     {
-                        String sql = "select gpsid, orgid, carno, sssjmc, ssfjmc, ssdwmc   from GSBUILDER.T_GPS_INFO t where loctype = 2";
+                        String sql = "select gpsid, orgid, carno, sssjmc, ssfjmc, ssdwmc   from PGIS_DWXX.T_GPS_INFO_DZSP t where loctype = 2";
                         conn.Open();
                         OleDbCommand cmd = new OleDbCommand(sql, conn);
                         OleDbDataReader reader = cmd.ExecuteReader();
@@ -278,17 +280,18 @@ namespace Beyon.WebService.PGIS
 
             String timeMarker = new StringBuilder().Append("_").Append(start.Year).Append("_").Append(start.Month >= 10 ? start.Month.ToString() : ("0" + start.Month)).Append("_").Append(start.Day).ToString();
             List<GpsTrail> list = new List<GpsTrail>();
+            String sql = "select GPSID,X,Y,TIME from PGIS_DWXX.GA_GPS_HISTORY" + timeMarker + "  where TIME >= ? and TIME <= ?"; //todo 根据时间构造
+
             try
             {
                 using (OleDbConnection conn = new OleDbConnection(gpsHistoryDBConnectBuilder.ConnectionString))
                 {
-                    String sql = "select GPSID,X,Y,TIME from GSDATA.GA_GPS_HISTORY" + timeMarker + "  where TIME >= ? and TIME <= ?"; //todo 根据时间构造
                     conn.Open();
                     OleDbCommand cmd = new OleDbCommand(sql, conn);
                     cmd.Parameters.Add(new OleDbParameter("@start", OleDbType.DBTimeStamp));
-                    cmd.Parameters[0].Value = start;
+                    cmd.Parameters[0].Value = start.ToString("yyyy-MM-dd HH:mm:ss");
                     cmd.Parameters.Add(new OleDbParameter("@end", OleDbType.DBTimeStamp));
-                    cmd.Parameters[1].Value = end;
+                    cmd.Parameters[1].Value = end.ToString("yyyy-MM-dd HH:mm:ss");
                     OleDbDataReader reader = cmd.ExecuteReader();
 
                     while (reader.Read())
@@ -325,6 +328,7 @@ namespace Beyon.WebService.PGIS
             }
             catch(Exception ex)
             {
+                LogMgr.Instance.Error(String.Format("执行轨迹信息查询失败，SQL:{0}", sql), ex);
                 throw ex;
             }
             return list;
@@ -351,7 +355,7 @@ namespace Beyon.WebService.PGIS
             {
                 using (OleDbConnection conn = new OleDbConnection(gpsHistoryDBConnectBuilder.ConnectionString))
                 {
-                    String sql = "select GPSID,X,Y,TIME from GSDATA.GA_GPS_HISTORY" + timeMarker + "  where TIME >= ? and TIME <= ?"; //todo 根据时间构造
+                    String sql = "select GPSID,X,Y,TIME from PGIS_DWXX.GA_GPS_HISTORY" + timeMarker + "  where TIME >= ? and TIME <= ?"; //todo 根据时间构造
                     conn.Open();
                     OleDbCommand cmd = new OleDbCommand(sql, conn);
                     cmd.Parameters.Add(new OleDbParameter("@start", OleDbType.DBTimeStamp));
@@ -421,7 +425,7 @@ namespace Beyon.WebService.PGIS
             {
                 using (OleDbConnection conn = new OleDbConnection(gpsHistoryDBConnectBuilder.ConnectionString))
                 {
-                    String sql = "select GPSID,X,Y,TIME from GSDATA.GA_GPS_HISTORY" + timeMarker + "  where TIME >= ? and TIME <= ?"; //todo 根据时间构造
+                    String sql = "select GPSID,X,Y,TIME from PGIS_DWXX.GA_GPS_HISTORY" + timeMarker + "  where TIME >= ? and TIME <= ?"; //todo 根据时间构造
                     conn.Open();
                     OleDbCommand cmd = new OleDbCommand(sql, conn);
                     cmd.Parameters.Add(new OleDbParameter("@start", OleDbType.DBTimeStamp));
