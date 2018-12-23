@@ -14,6 +14,12 @@ namespace Beyon.Service.Local
         /// <returns></returns>
         List<KedaVideo> GetAllVideos();
 
+         /// <summary>
+        /// 获取所有固定摄像头信息
+        /// </summary>
+        /// <returns></returns>
+        List<KedaVideo> GetAllFixedVides();
+
         /// <summary>
         /// 根据名称模糊查询
         /// </summary>
@@ -29,6 +35,13 @@ namespace Beyon.Service.Local
         /// <param name="maxX"></param>
         /// <param name="maxY"></param>
         /// <returns></returns>
-        List<KedaVideo> GetAllVideosByExtent(double minX, double minY, double maxX, double maxY);
+        List<KedaVideo> GetVideosOfRect(double longitude_left, double latitude_left, double longitude_right, double latitude_right);
+
+        /// <summary>
+        /// 获取监所摄像头集合
+        /// </summary>
+        /// <param name="prisonID"></param>
+        /// <returns></returns>
+        List<KedaVideo> GetVideoOfPrison(String prisonID);
     }
 }

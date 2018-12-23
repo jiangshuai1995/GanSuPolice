@@ -4,12 +4,10 @@
     using Beyon.WebService.GridPlatform.GridSelect;
     using System;
     using System.Collections.Generic;
-    using Beyon.Dao.GridPlatform.GridSelect;
 
     public class GridSelectService
     {
-        private Beyon.WebService.GridPlatform.GridSelect.GridSelectManager gridSelectManager = new Beyon.WebService.GridPlatform.GridSelect.GridSelectManager();
-        private Beyon.Dao.GridPlatform.GridSelect.GridSelectManager gs = new Dao.GridPlatform.GridSelect.GridSelectManager();
+        private GridSelectManager gridSelectManager = new GridSelectManager();
 
         public List<GridInfo> GetAllGrids()
         {
@@ -38,8 +36,7 @@
 
         public BuildingDetail GetBuildingDetail(string fwId)
         {
-            return gs.GetBuildingDetail(fwId);
-            //return this.gridSelectManager.GetBuildingDetail(fwId);
+            return this.gridSelectManager.GetBuildingDetail(fwId);
         }
 
         public List<ChangSuo> GetChangSuoList(string gridId, string type)
@@ -232,14 +229,12 @@
 
         public CSDetail GetCSDetail(string csId, string type)
         {
-            return gs.GetCSDetail(csId, type);
-            //return this.gridSelectManager.GetCSDetail(csId, type);
+            return this.gridSelectManager.GetCSDetail(csId, type);
         }
 
         public CSDetailWithPic GetCSDetailWithPic(string csId, string type)
         {
-            return gs.GetCSDetailWithPic(csId, type);
-            //return this.gridSelectManager.GetCSDetailWithPic(csId, type);
+            return this.gridSelectManager.GetCSDetailWithPic(csId, type);
         }
 
         public List<RenKou> GetCZRenKouList(string gridId)
@@ -439,9 +434,9 @@
             throw new ArgumentException("一级菜单名称无效");
         }
 
-        public LvKe GetLvKeDetail(string lksfzh)
+        public LvKe GetLvKeDetail(string lksfzh, string dateTime = null)
         {
-            return this.gridSelectManager.GetLvKeDetail(lksfzh);
+            return this.gridSelectManager.GetLvKeDetail(lksfzh, dateTime);
         }
 
         public List<LvKe> GetLvKeList(string ldId)
@@ -456,8 +451,7 @@
 
         public PoliceManDetail GetPoliceManDetail(string jyid)
         {
-            return gs.GetPoliceManDetail(jyid);
-            //return this.gridSelectManager.GetPoliceManDetail(jyid);
+            return this.gridSelectManager.GetPoliceManDetail(jyid);
         }
 
         public List<PoliceMan> GetPoliceManList(string gridId)
@@ -467,8 +461,7 @@
 
         public RenKou GetRenKouDetail(string sfzh)
         {
-            return gs.GetRenKouDetail(sfzh);
-            //return this.gridSelectManager.GetRenKouDetail(sfzh);
+            return this.gridSelectManager.GetRenKouDetail(sfzh);
         }
 
         public GridSummary GetSummaryInfo(string gridId)
@@ -476,9 +469,9 @@
             return this.gridSelectManager.GetGridSummary(gridId);
         }
 
-        public SWRY GetSWRYDetail(string zjhm)
+        public SWRY GetSWRYDetail(string zjhm, string time = null)
         {
-            return this.gridSelectManager.GetSWRYDetail(zjhm);
+            return this.gridSelectManager.GetSWRYDetail(zjhm, time);
         }
 
         public List<SWRY> GetSWRYList(string wbId)
@@ -493,8 +486,7 @@
 
         public ZDRenKou GetZDRenKouDetail(string sfzh)
         {
-            return gs.GetZDRenKouDetail(sfzh);
-            //return this.gridSelectManager.GetZDRenKouDetail(sfzh);
+            return this.gridSelectManager.GetZDRenKouDetail(sfzh);
         }
 
         public List<RenKou> GetZDRenKouList(string gridId)

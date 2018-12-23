@@ -23,5 +23,9 @@ namespace Beyon.Service.ZhddPlatform
         List<PoliceOrg> GetNPcsPoliceOrgsByExtent(double minX, double minY, double maxX, double maxY);
 
         List<Temple> GetAllTemplesByExtent(double minX, double minY, double maxX, double maxY);
+
+        List<Barrier> GetAllBarriersByExtent(double minX, double minY, double maxX, double maxY);
+
+        Barrier GetBarrierByID(string id);
 	}
 }

@@ -38,6 +38,16 @@ namespace Beyon.Service.Local
         }
 
         /// <summary>
+        /// 获取4G图传车视频数据
+        /// </summary>
+        /// <param name="CarPlateNum"></param>
+        /// <returns></returns>
+        public List<KedaVideo> Get4GVideoOfPoliceCar(String CarPlateNum) 
+        {
+            return policeCarManager.Get4GVideoOfPoliceCar(CarPlateNum);
+        }
+
+        /// <summary>
         /// 获取警车上的340M图传车摄像头设备ID
         /// </summary>
         /// <param name="info"></param>

@@ -89,10 +89,6 @@
       <Project>{86AB842F-3894-424E-A6DD-9781A1617C94}</Project>
       <Name>Beyon.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Beyon.Dao\Beyon.Dao.csproj">
-      <Project>{a4336afc-9511-444f-98f6-5a45c47b7409}</Project>
-      <Name>Beyon.Dao</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Beyon.Domain\Beyon.Domain.csproj">
       <Project>{63494853-5A4E-4C9D-A9B6-50F4D97B28C5}</Project>
       <Name>Beyon.Domain</Name>

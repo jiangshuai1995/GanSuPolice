@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Beyon.Dao.ZhddPlatform.zzjgInfo;
-using Beyon.Dao.ZhddPlatform;
+using Beyon.WebService.ZhddPlatform.zzjgInfo;
 using Beyon.Domain.Zhdd.zjjg;
 
 namespace Beyon.Service.ZhddPlatform
@@ -14,6 +13,7 @@ namespace Beyon.Service.ZhddPlatform
         private CyberBarManager cyberBarManager;
         private PoliceOrgManager policeOrgManager;
         private TempleManager templeManager;
+        private BarrierManager barrierManager;
 
         public ZzjgServiceImpl()
         {
@@ -21,6 +21,7 @@ namespace Beyon.Service.ZhddPlatform
             this.cyberBarManager = new CyberBarManager();
             this.policeOrgManager = new PoliceOrgManager();
             this.templeManager = new TempleManager();
+            this.barrierManager = new BarrierManager();
         }
 
         public List<Hotel> GetAllHotels()
@@ -91,6 +92,16 @@ namespace Beyon.Service.ZhddPlatform
         public List<Temple> GetAllTemplesByExtent(double minX, double minY, double maxX, double maxY)
         {
             return this.templeManager.GetAllTempleByExtent(minX, minY, maxX, maxY);
+        }
+
+        public List<Barrier> GetAllBarriersByExtent(double minX, double minY, double maxX, double maxY) 
+        {
+            return this.barrierManager.GetAllBarrierByExtent(minX, minY, maxX, maxY);
+        }
+
+        public Barrier GetBarrierByID(string id) 
+        {
+            return this.barrierManager.GetBarrierByID(id);
         }
 	}
 }
